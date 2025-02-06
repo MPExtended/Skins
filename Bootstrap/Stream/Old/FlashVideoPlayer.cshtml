@@ -1,0 +1,91 @@
+﻿@model PlayerViewModel
+@using MPExtended.Services.Common.Interfaces
+@Html.Assets().AddScript("~/Scripts/dragdealer.js")
+@Html.Assets().AddViewScript("Content/jwplayer/jwplayer.js")
+
+<div class="intrinsicRatio ratio16to9">
+	<div id="mediaspace">
+		@Html.Raw(UIStrings.InstallFlashPlayerToUseThisPlayer)
+	</div>
+</div>
+
+<div id="seekbar" class="dragdealer">
+	<div class="red-bar handle">
+		<img src='@Url.ContentLink("Images/slider-button.png")' alt="^" />
+	</div>
+</div>
+
+
+		
+<script type='text/javascript'>
+	var startPos = 0;
+	var videoLength = 0;
+	var percentage = 0;
+	
+	var slider = new Dragdealer('seekbar',
+	{
+		steps: 100,
+		snap: false,
+		slide: false,
+		loose: true,
+		speed: 100,
+		disabled: true,
+		callback: function (x, y) {
+			startPos = Math.round(videoLength * x);
+			play(startPos, true)
+		}
+	});
+
+	jwplayer('mediaspace').setup({
+		width: '100%',
+		height: '100%',
+		stretching: 'uniform',
+		provider: 'http',
+		primary: 'flash',
+		type: 'mp4',
+		file: '@Html.Raw(@Model.URL)' + '&starttime=' + startPos.toString(),
+		@if(Model.MediaType == WebMediaType.Movie) {
+			@: image: '@Url.Action("Fanart", "MovieLibrary", new { movie = Model.MediaId, width=1170})',
+		} else if (Model.MediaType == WebMediaType.TVEpisode) {
+			@: image: '@Url.Action("EpisodeImage", "TVShowsLibrary", new { episode = Model.MediaId, width=1170 })',
+		}
+		startparam: "starttime",
+		bufferlength: 15
+	}).onTime(function(e) {
+		var pos = parseFloat(startPos) + e.position;
+		percentage = pos / e.duration;
+		slider.setValue(percentage);
+	}).onPlay(function() {
+		videoLength = jwplayer().getDuration();
+		slider.enable();
+	}).onReady(function() {
+		play(0, false);
+	}).onSeek(function(e) {
+		if(jwplayer().getBuffer() < (e.offset/videoLength)*100)
+		{
+			jwplayer().pause();
+			play(e.offset, true)
+			startPos = e.offset;
+		}
+	});
+
+	function play(startPos, autoStart) {
+		jwplayer().load({
+			provider: 'http',
+			type: 'mp4',
+			file: '@Html.Raw(@Model.URL)' + '&starttime=' + startPos.toString(),
+			@if(Model.MediaType == WebMediaType.Movie) {
+				@: image: '@Url.Action("Fanart", "MovieLibrary", new { movie = Model.MediaId})',
+			} else if (Model.MediaType == WebMediaType.TVEpisode) {
+				@: image: '@Url.Action("EpisodeImage", "TVShowsLibrary", new { episode = Model.MediaId })',
+			}
+			});
+		if (autoStart == true) {
+			jwplayer().play();
+		}
+	}
+
+	function setText(id, messageText) {
+		document.getElementById(id).innerHTML = messageText;
+	}
+</script>

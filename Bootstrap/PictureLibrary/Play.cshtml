@@ -1,0 +1,21 @@
+﻿@model VideoViewModel
+@{ViewBag.Title = Model.Video.Title;}
+
+<ul class="breadcrumb">
+  @{
+    foreach (var item in Model.Video.Categories)
+    {
+      <li><a href='@Url.Action("Index", "PictureLibrary", new { id = item.Id })'>@item.Title</a> <span class="divider">/</span></li>
+    }
+  }
+  <li><a href='@Url.Action("Video", "PictureLibrary", new { video = @Model.Video.Id })'>@Model.Video.Title</a> <span class="divider">/</span></li>
+  <li class="active">@UIStrings.Play</li>
+</ul>
+
+@{
+  Html.RenderAction("Player", "Stream", new
+  {
+    type = MPExtended.Services.Common.Interfaces.WebMediaType.MobileVideo,
+    itemId = @Model.Id
+  });
+}

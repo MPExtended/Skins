@@ -1,0 +1,32 @@
+﻿@model IEnumerable<ScheduleViewModel>
+@{ViewBag.Title = UIStrings.Schedules;}
+
+<table class="table table-striped">
+<thead>
+	<tr>
+		<th>@UIStrings.Program</th>
+		<th>@UIStrings.ScheduleHeaderRepetition</th>
+		<th>@UIStrings.Channel</th>
+		<th>@UIStrings.ScheduleHeaderStartTime</th>
+		<th>@UIStrings.ScheduleHeaderEndTime</th>
+		<th></th>
+	</tr>
+</thead>
+<tbody>
+	@foreach (var item in Model) {
+	<tr>
+		<td>@Html.DisplayFor(x => item.Title)</td>
+		<td>@item.ScheduleTypeName</td>
+		<td>@Html.DisplayFor(x => item.ChannelName)</td>
+		<td>@Html.DisplayFor(x => item.StartTimeFormatted)</td>
+		<td>@Html.DisplayFor(x => item.EndTimeFormatted)</td>
+		<td>
+			<a class="btn btn-mini btn-danger" href='@Url.Action("DeleteScheduleById", new { id = item.Id })'><i class="icon-trash icon-white"></i></a>
+			<a class="btn btn-mini" href='@Url.Action("EditSchedule", new { id = item.Id })'><i class="icon-pencil"></i></a>
+		</td>
+	</tr>
+	}
+</tbody>
+</table>
+
+<p>@Html.ActionLink(UIStrings.AddSchedule, "AddSchedule", "", new { @class="btn" })</p>

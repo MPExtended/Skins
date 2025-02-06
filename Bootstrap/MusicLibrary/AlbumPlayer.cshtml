@@ -1,0 +1,31 @@
+﻿@model AlbumViewModel
+@{ViewBag.Title = String.Format("{1} - {0}", Model.Album.Title, Model.Album.AlbumArtist);}
+@{
+ViewBag.Title = String.Format("{1} - {0}", Model.Album.Title, Model.Album.AlbumArtist);
+ViewBag.HeadTitle = Model.Album.Title;
+ViewBag.SubTitle = Model.Album.AlbumArtist;
+}
+
+<div class="row-fluid">
+	<div class="span8">
+		<ul class="breadcrumb">
+			<li><a href='@Url.Action("Albums", "MusicLibrary", new { artist=Model.Album.AlbumArtist })'>@Model.Album.AlbumArtist</a> <span class="divider">/</span></li>
+			<li class="active">@Model.Album.Title</li>
+		</ul>
+		
+		@{Html.RenderAction("MusicPlayer", "Stream", new { albumId = @Model.Album.Id, codec = @Model.Album.Codec }); }
+	</div>
+
+	
+	<div class="span4">
+		<div class="span12 row center">
+			<img class="lazy img-polaroid img-rounded" src='@Url.ContentLink("Images/default/album.png")' data-original='@Url.Action("AlbumImage", "MusicLibrary", new { album = Model.Tracks.ElementAt(0).AlbumId, width=250 })' alt="Album cover"/>
+		</div>
+		
+		<dl class="dl-horizontal">
+			<dt>Year</dt><dd>@Model.Album.Year</dd>
+			<dt></dt><dd><p class="muted"><small>@Model.Album.Codec</small></p></dd>
+		</dl>
+	</div>
+	
+</div>

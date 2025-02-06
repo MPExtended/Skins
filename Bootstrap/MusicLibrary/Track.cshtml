@@ -1,0 +1,39 @@
+﻿@model MPExtended.Services.MediaAccessService.Interfaces.Music.WebMusicTrackDetailed
+@{
+ViewBag.Title = String.Format("{1} - {0}", Model.Title, Model.Artist.First());
+ViewBag.HeadTitle = Model.Title;
+ViewBag.SubTitle = Model.Artist.First();
+}
+
+<script type="text/javascript">var duration = @Model.Duration;</script>
+
+<div class="row-fluid">
+	<div class="span8">
+		<ul class="breadcrumb">
+			<li><a href='@Url.Action("Albums", "MusicLibrary", new { artist=Model.Artist.First() })'>@Model.Artist.First()</a> <span class="divider">/</span></li>
+			<li><a href='@Url.Action("Album", "MusicLibrary", new { album=Model.AlbumId })'>@Model.Album</a> <span class="divider">/</span></li>
+			<li class="active">@Model.Title</li>
+		</ul>
+		
+		@{
+			Html.RenderAction("Player", "Stream", new
+			{
+				type = MPExtended.Services.Common.Interfaces.WebMediaType.MusicTrack,
+				itemId = Model.Id
+			});
+		}
+	</div>
+
+	
+	<div class="span4">
+		<div class="span12 row center">
+			<img class="lazy img-polaroid img-rounded" src='@Url.ContentLink("Images/default/album.png")' data-original='@Url.Action("AlbumImage", "MusicLibrary", new { album = Model.AlbumId, width=250 })' alt="Album cover"/>
+		</div>
+		
+		<dl class="dl-horizontal">
+			<dt>Album</dt><dd>@Model.Album</dd>
+			<dt>Track</dt><dd>@Model.TrackNumber</dd>
+			<dt>Year</dt><dd>@Model.Year</dd>
+		</dl>
+	</div>
+</div>

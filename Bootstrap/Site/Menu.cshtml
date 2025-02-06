@@ -1,0 +1,37 @@
+﻿@model MenuModel
+				
+<div class="nav-collapse collapse">
+<ul class="nav">
+	<li @if (Request.RawUrl == Url.Action("Index", "Home")) { <text>class="active"</text> } ><a href='@Url.Action("Index", "Home")'><i class="icon-home icon-white"></i> @UIStrings.Home</a></li>
+	@if (ViewBag.Availability.Movies){ <li @if (Request.RawUrl.Contains("/MovieLibrary") || Request.RawUrl.Contains("/NewMovies") || Request.RawUrl.Contains("/NewUnWatchedMovies")) { <text>class="active"</text> }>@Html.ActionLink(UIStrings.Movies, "Index", "MovieLibrary")</li> }
+	@if (ViewBag.Availability.TVShows) { <li @if (Request.RawUrl.Contains("/TVShowsLibrary") || Request.RawUrl.Contains("/NewEpisodes") || Request.RawUrl.Contains("/NewUnwatchedEpisodes") || Request.RawUrl.Contains("/AiredEpisodes") || Request.RawUrl.Contains("/AiredUnwatchedEpisodes")) { <text>class="active"</text> }>@Html.ActionLink(UIStrings.TVShows, "Index", "TVShowsLibrary")</li> }
+	@if (ViewBag.Availability.Music) { <li @if (Request.RawUrl.Contains("/MusicLibrary") || Request.RawUrl.Contains("/NewMusicTracks") || Request.RawUrl.Contains("/NewAlbums")) { <text>class="active"</text> } >@Html.ActionLink(UIStrings.Music, "Index", "MusicLibrary")</li> }
+	@if (ViewBag.Availability.Picture) { <li @if (Request.RawUrl.Contains("/PictureLibrary")) { <text>class="active"</text> } >@Html.ActionLink(UIStrings.Pictures, "Index", "PictureLibrary")</li> }
+
+	@if (ViewBag.Availability.TAS)
+	{
+		<li class="dropdown @if (Request.RawUrl.Contains("/Status") || Request.RawUrl.Contains("/Schedule") || Request.RawUrl.Contains("/Recording") || Request.RawUrl.Contains("/Television") || Request.RawUrl.Contains("/NewRecordings")){ <text>active</text> }" >
+		<a href='@Url.Action("Index", "Status")' class="dropdown-toggle" data-toggle="dropdown">TV-Server <b class="caret"></b></a>
+		
+			<ul class="dropdown-menu" >
+				<li>@Html.ActionLink(UIStrings.TVGuide, "TVGuide", "Television")</li>
+				<li>@Html.ActionLink(UIStrings.Recordings, "Index", "Recording")</li>
+				<li>@Html.ActionLink(UIStrings.Schedules, "Index", "Schedule")</li>
+				<li>@Html.ActionLink(UIStrings.Status, "Index", "Status")</li>
+			</ul>
+		</li>
+	}
+
+  @if (ViewBag.Availability.Shares)
+  { 
+    <li class="dropdown @if (Request.RawUrl.Contains("/ShareLibrary")){ <text>active</text> }">
+      <a href='@Url.Action("Index", "ShareLibrary")' class="dropdown-toggle" data-toggle="dropdown">@UIStrings.Shares <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li>@Html.ActionLink(UIStrings.Movies, "Index/10", "ShareLibrary")</li>
+        <li>@Html.ActionLink(UIStrings.Music, "Index/9", "ShareLibrary")</li>
+        <li>@Html.ActionLink(UIStrings.Pictures, "Index/11", "ShareLibrary")</li>
+      </ul>
+    </li>
+  }
+</ul>
+</div><!--/.nav-collapse -->

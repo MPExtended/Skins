@@ -1,0 +1,89 @@
+﻿@model IEnumerable<MPExtended.Services.TVAccessService.Interfaces.WebRecordingBasic>
+@{ViewBag.Title = UIStrings.Recordings;}
+
+<div class="add-margin">
+	<button type="button" class="btn btn-info" data-toggle="button" id="groupbutton">Expand groups</button>
+</div>
+
+
+<script type="text/javascript">
+var groups = [];
+
+$(function() {
+
+	//get groups
+	$("#grouplist li").each(function(index) {
+		if($.inArray($(this).attr('data-group'), groups) == -1) {
+			groups.push($(this).attr('data-group'));
+		}
+	});
+
+	//add html to groups
+	jQuery.each(groups, function(index, groupname) {
+		var listSelector = "#grouplist > li[data-group='" + groupname + "']";
+		var itemsInGroup = $(listSelector).length;
+		
+		$(listSelector).wrapAll("<li data-group=\"" + groupname + "\"><ul class=\"group list thumbs coverlist\">");
+		$(listSelector + " ul.group").before("<a href=\"javascript:void(0)\"><h4 class=\"grouptitle\">" + groupname + " (" + itemsInGroup + ")");
+		
+		$(listSelector + " > a").click(function() {
+			var group = $(listSelector + " ul.group");
+			if (group.is(":hidden")) {
+				group.fadeIn();
+				forceImageLoading("#grouplist li[data-group='" + groupname + "'] ul.group");
+				$(listSelector).addClass("open");
+			}else{
+				group.hide();
+				$(listSelector).removeClass("open");
+			}
+		});
+	});
+	
+	//collapse all groups
+	$('#grouplist ul.group').css('display', 'none');
+	
+});
+
+
+$('#groupbutton').click(function() {
+	//wordt uitgezet
+	if($(this).hasClass('active')) {
+		$('#grouplist ul.group').hide();
+		$('#grouplist li').removeClass("open");
+	}else {
+		$('#grouplist ul.group').fadeIn();
+		$('#grouplist li').addClass("open");
+		forceImageLoading('#grouplist ul.group');
+	}
+});
+
+
+function forceImageLoading(selector) {
+	$(selector + " img.lazy").each(function() {
+		$(this).attr("src", $(this).attr("data-original"));
+		$(this).removeAttr("data-original");
+	});
+}
+</script>
+
+
+@{
+	if(Model.Count() == 0)
+	{
+		<p>There are no recordings!</p>
+	}else
+	{
+		<text><ul class="list thumbs coverlist" id="grouplist">
+		@foreach (var recording in Model.OrderByDescending(x => x.StartTime))
+		{
+			<li data-group='@recording.Title'>
+				<a href='@Url.Action("Details", new { id = recording.Id })'>
+					<img class="lazy" width="214" src='@Url.ContentLink("Images/default/recording.png")' data-original='@Url.Action("PreviewImage", "Recording", new { id = recording.Id, width = 214 })' alt="@recording.Title" />
+					<h4>@recording.Title</h4>
+					<p>@recording.StartTime.ToShortDateString()</p>
+				</a>
+			</li>
+		}
+		</ul></text>
+	}
+}

@@ -1,0 +1,113 @@
+﻿@using MPExtended.Services.MediaAccessService.Interfaces
+@model PictureViewModel
+@{
+  ViewBag.Title = Model.Picture.Title;
+  ViewBag.showTitle = false;
+}
+
+<div class="watched-container">
+  <div id="fanartheader" class="carousel slide hidden-phone">
+    <div class="carousel-inner">
+      <div class="active item">
+        <img src='@Url.ContentLink("Images/default/fanart.png")' data-original='@Url.Action("Fanart", new { picture = Model.Picture.Id, width = 1170})' width="100%" height="100%" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-header visible-phone"><h1>@(ViewBag.Title != null ? ViewBag.Title : UIStrings.Welcome)</h1></div>
+
+<ul class="breadcrumb">
+  @{
+    foreach (var item in Model.Picture.Categories)
+    {
+      <li><a href='@Url.Action("Index", "PictureLibrary", new { id = item.Id })'>@item.Title</a> <span class="divider">/</span></li>
+    }
+  }
+  <li class="active">@Model.Picture.Title</li>
+</ul>
+
+<div class="row-fluid">
+  <div class="span8">
+    <div class="tabbable tabs-left">
+
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
+        <li><a href="#fileinfo" data-toggle="tab">File information</a></li>
+      </ul>
+
+      <div class="tab-content">
+
+        <div class="tab-pane fade active in" id="details">
+          <dl class="dl-horizontal">
+            <dt>DateTaken:</dt>
+            <dd>@Model.Picture.DateTaken</dd>
+            @if (Model.EXIFInfo != null && Model.EXIFInfo.Metadata != null)
+            {
+              foreach (var metadata in Model.EXIFInfo.Metadata)
+              {
+                <dt>@metadata.Key:</dt>
+                <dd>@metadata.Value</dd>
+              }
+            }
+          </dl>
+        </div>
+
+        <div class="tab-pane fade" id="fileinfo">
+          <dl class="dl-horizontal">
+            <dt>Filesize:</dt>
+            <dd>@(((float)Model.FileInfo.Size / 1048576).ToString("0.00")) MB</dd>
+            <dt>Directory:</dt>
+            <dd>
+              @foreach (var path in @Model.Picture.Path)
+              {
+                <text>@path</text>
+              }
+            </dd>
+          </dl>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="span4">
+    <div class="span12 row center">
+      <a href='@Url.Action("Image", new { picture = @Model.Picture.Id })' data-fancybox="image">
+        <img class="img-polaroid img-rounded" src='@Url.Action("Image", new { picture = @Model.Picture.Id, width = 250 })' width="250" alt="No image" />
+      </a>
+    </div>
+
+    <div class="span12 row center">
+      <div class="ratingstar center"><div style='width: @(Model.Picture.Rating*10)%'></div></div>
+    </div>
+
+    <div class="btn-toolbar center">
+      <div class="btn-group">
+        <a class="btn" href='@Url.Action("Image", new { picture = Model.Picture.Id })'><i class="icon-download-alt"></i> @UIStrings.Download</a>
+        @if (Model.EXIFInfo != null && Model.EXIFInfo.Metadata != null && !Model.EXIFInfo.GeoLocation.IsZero())
+        {
+          <a class="btn" data-fancybox="image" data-options="{&quot;iframe&quot; : {&quot;css&quot; : {&quot;width&quot; : &quot;90%&quot;, &quot;height&quot; : &quot;90%&quot;}}}" href="https://www.google.com/maps/search/?api=1&amp;query=@Model.EXIFInfo.GeoLocation.ToString()"><i class="icon-globe"></i> Map</a>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $('[data-fancybox="image"]').fancybox({
+    buttons: [
+      "zoom",
+      "slideShow",
+      "fullScreen",
+      "close"
+    ],
+    loop: true,
+    transitionEffect: "zoom-in-out",
+    slideShow: {
+      autoStart: false,
+      speed: 5000
+    }
+  });
+</script>

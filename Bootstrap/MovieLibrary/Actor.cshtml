@@ -1,0 +1,91 @@
+﻿@model MovieActorViewModel
+@{ViewBag.Title = Model.Actor.Title;
+ViewBag.showTitle = false;}
+
+<div class="watched-container">
+<div id="fanartheader" class="carousel slide hidden-phone">
+  <div class="carousel-inner">
+      <div class="active item">
+        <img src='@Url.ContentLink("Images/default/fanart.png")' data-original='@Url.Action("ActorFanart", "MovieLibrary", new { actor = Model.Actor.Title, width = 1170 })' width="100%" height="100%" />
+      </div>
+  </div>
+  <div class="carousel-caption">
+	<h1>@Model.Actor.Title</h1>
+  </div>
+</div>
+<div class="page-header visible-phone" ><h1>@(ViewBag.Title != null ? ViewBag.Title : UIStrings.Actor)</h1></div>
+
+<div class="row-fluid">
+	<div class="span8">
+		<ul class="breadcrumb">
+            <li><a href='@Url.Action("Index", "MovieLibrary", new { })'>@UIStrings.Movies</a> <span class="divider">/</span></li>
+            <li><a href='@Url.Action("Actors", "MovieLibrary", new { })'>@UIStrings.Actors</a> <span class="divider">/</span></li>
+			<li class="active">@Model.Actor.Title</li>
+		</ul>
+
+		<ul class="list movie covers clearfix">
+		@foreach (var movie in Model.Movies)
+		{
+		<li>
+      <a href='@Url.Action("Details", "MovieLibrary", new { movie = movie.Id })'>
+        <div class="watched-container">
+          <img class="lazy" width="214" src='@Url.ContentLink("Images/default/movie-cover.png")' data-original='@Url.Action("Cover", "MovieLibrary", new { movie = movie.Id, width = 214 })' alt="@movie.Title" />
+          @if (movie.Watched)
+          {
+            <img class="watch" src='~/content/images/watched.png' alt="Watched" />
+          }
+        </div>
+        <h4>@movie.Title</h4>
+        <p>@movie.Runtime min.	@string.Join(", ", movie.Genres)</p>
+      </a>
+		</li>
+		}
+		</ul>
+		
+	</div>
+	
+
+  <div class="span4">
+    <div class="span12 row center">
+      <img class="img-polaroid img-rounded" src='@Url.Action("ActorCover", "MovieLibrary", new { actor = Model.Actor.Title, width = 250 })' width="250" alt="@Model.Actor.Title" />
+    </div>
+
+    <div class="btn-toolbar center">
+      <div class="btn-group">
+        @{
+          if (!string.IsNullOrEmpty(Model.Actor.IMDBId))
+          {
+            <a class="btn" target="_blank" href="http://www.imdb.com/name/@Model.Actor.IMDBId" title="IMDB"><i class="icon-info-sign"></i></a>
+          }
+          else
+          {
+            <a class="btn" target="_blank" href="http://www.imdb.com/find?q=@Model.Actor.Title" title="IMDB"><i class="icon-info-sign"></i></a>
+          }
+        }
+        <a class="btn" target="_blank" href="https://www.youtube.com/results?search_query=@Model.Actor.Title" title="Youtube"><i class="icon-facetime-video"></i></a>
+      </div>
+    </div>
+
+    <div class="span12 row center">
+      <h4>@Model.Actor.Title</h4>
+    </div>
+
+    <div class="span12 row">
+      @if (!string.IsNullOrEmpty(Model.Actor.Birth))
+      {
+        <h3>Birth:</h3>
+        <p>@Model.Actor.Birth</p>
+      }
+      @if (!string.IsNullOrEmpty(Model.Actor.Death))
+      {
+        <h3>Death:</h3>
+        <p>@Model.Actor.Death</p>
+      }
+      @if (!string.IsNullOrEmpty(Model.Actor.Biography))
+      {
+        <h3>Biography:</h3>
+        <p>@Model.Actor.Biography</p>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+﻿@model IEnumerable<MovieViewModel>
+@{
+	var menuModel = new MenuModel(Request.RequestContext.RouteData);
+	String selectedFilter = "";
+
+	if(Request["filter"] != null)
+	{
+		String filter = Request["filter"];
+		int offset = filter.IndexOf("*=");
+		selectedFilter = filter.Substring(offset + 2, filter.Length - offset - 2);
+		ViewBag.Title = UIStrings.Movies + " - " +  selectedFilter;
+	}else
+	{
+		ViewBag.Title = UIStrings.Movies;
+	}
+}
+
+<script type="text/javascript">
+	$("#facade").ready(function() {
+		facade(localStorage['facade_movielibrary'], 'movielibrary');
+	});
+</script>
+
+<div class="form-inline add-margin">
+	@if (menuModel.MovieGenres.Count() > 0)
+	{
+    	<div class="btn-group">
+            <a class="btn" href='@Url.Action("Genres", "MovieLibrary", new { })'>@UIStrings.Genres</a>
+    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    		<span class="caret"></span>
+    		</a>
+    		<ul class="dropdown-menu">
+    			<li><a href='@Url.Action("Index", "MovieLibrary", new { })'>@UIStrings.AllGenres</a></li>
+    			@foreach (var genre in menuModel.MovieGenres)
+    			{
+    			  <li><a href='@Url.Action("Index", "MovieLibrary", new { filter = "Genres*=" + genre + "" })'>@genre</a></li>
+    			}
+    		</ul>
+    	</div>
+	}
+
+	@if (menuModel.MovieCollections.Count() > 0)
+	{
+    	<div class="btn-group">
+        <a class="btn" href='@Url.Action("Collections", "MovieLibrary", new { })'>@UIStrings.Collections</a>
+    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    		<span class="caret"></span>
+    		</a>
+    		<ul class="dropdown-menu">
+    			<li><a href='@Url.Action("Index", "MovieLibrary", new { })'>@UIStrings.AllMovies</a></li>
+    			@foreach (var collection in menuModel.MovieCollections)
+    			{
+    			  <li><a href='@Url.Action("Index", "MovieLibrary", new { filter = "Collections*=" + collection + "" })'>@collection</a></li>
+    			}
+    		</ul>
+    	</div>
+	}
+	@if (menuModel.MovieCategories.Count() > 0)
+	{
+    	<div class="btn-group">
+    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    		@UIStrings.Groups
+    		<span class="caret"></span>
+    		</a>
+    		<ul class="dropdown-menu">
+    			<li><a href='@Url.Action("Index", "MovieLibrary", new { })'>@UIStrings.AllMovies</a></li>
+    			@foreach (var category in menuModel.MovieCategories)
+    			{
+    			  <li><a href='@Url.Action("Index", "MovieLibrary", new { filter = "Groups*=" + category + "" })'>@category</a></li>
+    			}
+    		</ul>
+    	</div>
+	}
+   	<div class="btn-group">
+        <a class="btn" href='@Url.Action("Actors", "MovieLibrary", new { })'>@UIStrings.Actors</a>
+   	</div>
+
+	<div class="btn-group">
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+		View
+		<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li><a href="javascript:facade('simple', 'movielibrary');"><i class="icon-align-justify"></i> List</a></li>
+			<li><a href="javascript:facade('movie coverlist', 'movielibrary');"><i class="icon-th-list"></i> Coverlist</a></li>
+			<li><a href="javascript:facade('movie covers', 'movielibrary');"><i class="icon-th"></i> Covers</a></li>
+			<li><a href="javascript:facade('movie covers large', 'movielibrary');"><i class="icon-th-large"></i> Large Covers</a></li>
+		</ul>
+	</div>
+
+	<input type="text" id="filter" placeholder="Filter" class="input-small" />
+</div>
+
+<ul class="list movie covers" id="facade">
+@{
+char lastLetter = '~';
+
+foreach (var movie in Model)
+{
+<li class="info" data-title="@movie.Movie.Title.ToLower()" @if(!lastLetter.Equals(movie.Movie.Title[0]) && !Char.IsNumber(movie.Movie.Title[0])){ <text>id="@(movie.Movie.Title[0])" class="shortcut"</text> }>
+    <a href='@Url.Action("Details", "MovieLibrary", new { movie = movie.Id })'>
+      <div class="watched-container">
+	    <img class="lazy" width="214" src='@Url.ContentLink("Images/default/movie-cover.png")' data-original='@Url.Action("Cover", "MovieLibrary", new { movie = movie.Id, width = 214 })' alt="@movie.Movie.Title" />
+        @if(movie.Movie.Watched)
+        {
+          <img class="watch" src='~/content/images/watched.png' alt="Watched" />
+        }
+	  </div>
+	<h4>@movie.Movie.Title</h4>
+	<p>@movie.Movie.Runtime min.	@string.Join(", ", movie.Movie.Genres)</p>
+    </a>
+</li>
+lastLetter = ((Char.IsNumber(movie.Movie.Title[0])) ? '#' : movie.Movie.Title[0]);
+}
+}
+</ul>
+
+
+<script type="text/javascript">
+var letters = [];
+
+$('.shortcut').each(function() {
+	letters.push($(this).attr('id'));
+});
+</script>

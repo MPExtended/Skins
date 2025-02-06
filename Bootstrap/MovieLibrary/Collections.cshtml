@@ -1,0 +1,54 @@
+﻿@model IEnumerable<MPExtended.Services.MediaAccessService.Interfaces.Movie.WebCollection>
+@{
+  ViewBag.Title = UIStrings.Collection;
+}
+
+<script type="text/javascript">
+  $("#facade").ready(function () {
+    facade(localStorage['facade_collection'], 'collectionview');
+  });
+</script>
+
+<div class="form-inline add-margin">
+  <div class="btn-group">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+      View
+      <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <li><a href="javascript:facade('simple', 'collectionview');"><i class="icon-align-justify"></i> List</a></li>
+      <li><a href="javascript:facade('movie coverlist', 'collectionview');"><i class="icon-th-list"></i> Coverlist</a></li>
+      <li><a href="javascript:facade('movie covers', 'collectionview');"><i class="icon-th"></i> Covers</a></li>
+      <li><a href="javascript:facade('movie covers large', 'collectionview');"><i class="icon-th-large"></i> Large Covers</a></li>
+    </ul>
+  </div>
+
+  <input type="text" id="filter" placeholder="Filter" class="input-small" />
+</div>
+
+<ul class="list movie covers" id="facade">
+  @{
+    char lastLetter = '~';
+
+    foreach (var collection in Model)
+    {
+      <li class="info" data-title="@collection.Title.ToLower()" @if (!lastLetter.Equals(collection.Title[0]) && !Char.IsNumber(collection.Title[0])) { <text> id="@(collection.Title[0])" class="shortcut" </text> }>
+        <a href='@Url.Action("Collection", "MovieLibrary", new { collection = collection.Id })'>
+          <div class="watched-container">
+            <img class="lazy" width="214" src='@Url.ContentLink("Images/default/movie-cover.png")' data-original='@Url.Action("CollectionCover", "MovieLibrary", new { collection = collection.Id, width = 214 })' alt="@collection.Title" />
+          </div>
+          <h4>@collection.Title</h4>
+        </a>
+      </li>
+      lastLetter = ((Char.IsNumber(collection.Title[0])) ? '#' : collection.Title[0]);
+    }
+  }
+</ul>
+
+<script type="text/javascript">
+  var letters = [];
+
+  $('.shortcut').each(function () {
+    letters.push($(this).attr('id'));
+  });
+</script>
