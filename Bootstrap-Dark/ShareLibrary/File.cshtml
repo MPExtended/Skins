@@ -18,7 +18,7 @@
     
     <div class="modal-footer">
         <a href="@Url.Action("DeleteFile", new { id = Model.Provider, fileId = Model.File.Id })" class="btn btn-danger">Yes</a>
-        <a href="#" class="btn btn-primary" data-dismiss="modal">No</a>
+        <a href="@Request.RawUrl" class="btn btn-primary" data-dismiss="modal">No</a>
     </div>
 </div>
 

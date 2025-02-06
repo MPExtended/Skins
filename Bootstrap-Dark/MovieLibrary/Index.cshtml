@@ -26,7 +26,7 @@
 	{
     	<div class="btn-group">
             <a class="btn" href='@Url.Action("Genres", "MovieLibrary", new { })'>@UIStrings.Genres</a>
-    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="@Request.RawUrl">
     		<span class="caret"></span>
     		</a>
     		<ul class="dropdown-menu">
@@ -43,7 +43,7 @@
 	{
     	<div class="btn-group">
         <a class="btn" href='@Url.Action("Collections", "MovieLibrary", new { })'>@UIStrings.Collections</a>
-    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="@Request.RawUrl">
     		<span class="caret"></span>
     		</a>
     		<ul class="dropdown-menu">
@@ -58,7 +58,7 @@
 	@if (menuModel.MovieCategories.Count() > 0)
 	{
     	<div class="btn-group">
-    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="@Request.RawUrl">
     		@UIStrings.Groups
     		<span class="caret"></span>
     		</a>
@@ -76,7 +76,7 @@
    	</div>
 
 	<div class="btn-group">
-		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="@Request.RawUrl">
 		View
 		<span class="caret"></span>
 		</a>
