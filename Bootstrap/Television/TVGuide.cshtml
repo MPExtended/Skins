@@ -74,7 +74,7 @@ function checkWidth() {
 	@using (Html.BeginForm("TVGuide", "Television", FormMethod.Get, new { @class="form-inline" } ))
 	{
 		@Html.DropDownList("group", Model.Groups)
-		@Html.EditorFor(model => model.GuideStart, "Time", "time", new { openOnFocus = true })
+		/*@Html.EditorFor(model => model.GuideStart, "Time", "time", new { openOnFocus = true })*/
 		/*@Html.Hidden("time", Model.GuideStart.ToString("s"))*/
 		<input id="changeViewBtn" type="button" class="btn" onclick="changeView();" value="Toggle view" />
 	}

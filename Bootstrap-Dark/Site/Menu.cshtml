@@ -11,8 +11,7 @@
 	@if (ViewBag.Availability.TAS)
 	{
 		<li class="dropdown @if (Request.RawUrl.Contains("/Status") || Request.RawUrl.Contains("/Schedule") || Request.RawUrl.Contains("/Recording") || Request.RawUrl.Contains("/Television") || Request.RawUrl.Contains("/NewRecordings")){ <text>active</text> }" >
-		<a href='@Url.Action("Index", "Status")' class="dropdown-toggle" data-toggle="dropdown">TV-Server <b class="caret"></b></a>
-		
+		<a href="@Request.RawUrl" class="dropdown-toggle" data-toggle="dropdown">TV-Server <b class="caret"></b></a>
 			<ul class="dropdown-menu" >
 				<li>@Html.ActionLink(UIStrings.TVGuide, "TVGuide", "Television")</li>
 				<li>@Html.ActionLink(UIStrings.Recordings, "Index", "Recording")</li>

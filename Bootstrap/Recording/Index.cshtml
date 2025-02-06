@@ -2,7 +2,7 @@
 @{ViewBag.Title = UIStrings.Recordings;}
 
 <div class="add-margin">
-	<button type="button" class="btn btn-info" data-toggle="button" id="groupbutton">Expand groups</button>
+	<button type="button" class="btn btn-info" data-toggle="button" id="groupbutton">Expand Groups</button>
 </div>
 
 
@@ -48,20 +48,21 @@ $(function() {
 $('#groupbutton').click(function() {
 	//wordt uitgezet
 	if($(this).hasClass('active')) {
+		$(this).html('Expand Groups');
 		$('#grouplist ul.group').hide();
-		$('#grouplist li').removeClass("open");
-	}else {
+		$('#grouplist li').removeClass('open');
+	} else {
+		$(this).html('Collapse Groups');
 		$('#grouplist ul.group').fadeIn();
-		$('#grouplist li').addClass("open");
+		$('#grouplist li').addClass('open');
 		forceImageLoading('#grouplist ul.group');
 	}
 });
 
-
 function forceImageLoading(selector) {
-	$(selector + " img.lazy").each(function() {
-		$(this).attr("src", $(this).attr("data-original"));
-		$(this).removeAttr("data-original");
+	$(selector + ' img.lazy').each(function() {
+		$(this).attr('src', $(this).attr('data-original'));
+		$(this).removeAttr('data-original');
 	});
 }
 </script>

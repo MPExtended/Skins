@@ -82,16 +82,16 @@
 <h2>@UIStrings.SystemStatus</h2>
 
 <div class="btn-group">
-	<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-		Refreshrate (<span id="currentRefreshrate"></span> s)
+	<a class="btn dropdown-toggle" data-toggle="dropdown" href="@Request.RawUrl">
+		Refresh Rate (<span id="currentRefreshrate"></span> s)
 		<span class="caret"></span>
 	</a>
 	<ul class="dropdown-menu">
-		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 1;" >1 s</a></li>
-		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 2;" >2 s</a></li>
-		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 3;" >3 s</a></li>
-		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 5;" >5 s</a></li>
-		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 10;" >10 s</a></li>
+		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 1;" >1s</a></li>
+		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 2;" >2s</a></li>
+		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 3;" >3s</a></li>
+		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 5;" >5s</a></li>
+		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 10;" >10s</a></li>
 	</ul>
 </div>
 
@@ -103,16 +103,13 @@
 	<div class="progress progress-info progress-striped"><div class="bar" id="memoryUsage"></div></div>
 </div>
 
-
 <div id="usageGraph" style="height: 180px;"></div>
-
 <!--<pre id="array"></pre>-->
-
 
 <script type="text/javascript">
 var startTimeStamp = (+new Date)/1000;
 var historySize = 240, //seconds
-		refreshRate = 2,
+		refreshRate = 2, //seconds
 		cachedRefreshRate = refreshRate; //seconds
 
 var options = {

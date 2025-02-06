@@ -25,7 +25,7 @@
 	@if (menuModel.MusicGenres.Count() > 0)
 	{
     	<div class="btn-group">
-    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="@Request.RawUrl">
     		Genre
     		<span class="caret"></span>
     		</a>
@@ -39,7 +39,7 @@
     	</div>
 	}
 	<div class="btn-group">
-		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="@Request.RawUrl">
 		View
 		<span class="caret"></span>
 		</a>

@@ -103,11 +103,10 @@ $(window).scroll(function() {
 				</button>
 				<a class="brand hidden-desktop" href='@Url.Action("Index", "Home")' title="WebMediaPortal"><img src="@Url.ContentLink("Images/favicon.png")" height="36" alt="WebMediaPortal"></a>
 				@{Html.RenderAction("Menu", "Site");}
-				
 				<div class="nav-collapse collapse">
 					<ul class="nav pull-right">
 						<li class="dropdown @if (Request.RawUrl.Contains("/Settings")) { <text>active</text> }" >
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> @Html.Raw(Context.User.Identity.Name) <b class="caret"></b></a>
+							<a href="@Request.RawUrl" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> @Html.Raw(Context.User.Identity.Name) <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 								<li><a href='@Url.Action("Index", "Settings")'><i class="icon-wrench"></i> @UIStrings.Settings</a></li>
 								<li><a href='@Url.Action("LogOff", "Account")'><i class="icon-off"></i> @UIStrings.LogOff</a></li>
@@ -131,7 +130,7 @@ $(window).scroll(function() {
 
 <div id="footer">
 	<div class="container">
-		<p class="muted credit">WebMediaPortal | Bootstrap theme by Kay Schasfoort | Contributed by ajs | Team Mediaportal</p>
+		<!-- <p class="muted credit">WebMediaPortal | Bootstrap theme by Kay Schasfoort | Contributed by ajs | Team Mediaportal</p> -->
 	</div>
 </div>
 }else

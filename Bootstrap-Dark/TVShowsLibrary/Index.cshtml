@@ -23,7 +23,7 @@
 <div class="form-inline add-margin">
 	<div class="btn-group">
         <a class="btn" href='@Url.Action("Genres", "TVShowsLibrary", new { })'>@UIStrings.Genres</a>
-		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="@Request.RawUrl">
 		<span class="caret"></span>
 		</a>
 		<ul class="dropdown-menu">
@@ -40,7 +40,7 @@
    	</div>
 
 	<div class="btn-group">
-		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="@Request.RawUrl">
 		View
 		<span class="caret"></span>
 		</a>

@@ -15,7 +15,7 @@
     
     <div class="modal-footer">
         <a href="@Url.Action("DeleteRecording", new { id = Model.Id })" class="btn btn-danger">Yes</a>
-        <a href="#" class="btn btn-primary" data-dismiss="modal">No</a>
+        <a href="@Request.RawUrl" class="btn btn-primary" data-dismiss="modal">No</a>
     </div>
 </div>
 
@@ -45,19 +45,45 @@
           @if (!string.IsNullOrEmpty(Model.EpisodeName))
           {
             <dt>Episode:</dt>
-            <dd>@Model.EpisodeName</dd>}
+            <dd>@Model.EpisodeName</dd>
+          }
           @if (!string.IsNullOrEmpty(Model.ChannelName))
           {
             <dt>Channel:</dt>
-            <dd>@Model.ChannelName</dd>}
+            <dd>@Model.ChannelName</dd>
+          }
+          @{
+            string Locale = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+          }
           <dt>@UIStrings.RecordedOn:</dt>
-          <dd>@Model.StartTime</dd>
+          @if (Locale == "en" || Locale == "en-US")
+          {
+            <dd>@Model.StartTime.ToString("dddd, dd MMMM yyyy' @ 'h:mm tt") </dd>
+          }
+          else
+          {
+            <dd>@Model.StartTime.ToString("dddd, dd MMMM yyyy' @ 'HH:mm") </dd>
+          }
           @if (!string.IsNullOrEmpty(Model.Genre))
           {
             <dt>Genre:</dt>
-            <dd>@Model.Genre</dd>}
-          <dt>Duration:</dt>
-          <dd>@(String.Format("{0:mm}", (Model.EndTime - Model.StartTime))) min.</dd>
+            string Genre = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(Model.Genre.ToLower());
+            <dd>@Genre</dd>
+          }
+          @{
+            DateTimeOffset dtos = new DateTimeOffset(Model.StartTime);
+            DateTimeOffset dtoe = new DateTimeOffset(Model.EndTime);
+            var mins = (dtoe.ToUnixTimeSeconds() - dtos.ToUnixTimeSeconds()) / 60;
+          }          
+          <dt>Duration:</dt>          
+          @if (mins == 1)
+            {
+            <dd>@mins min</dd>
+            }
+          else
+            {
+            <dd>@mins mins</dd>
+            }
         </dl>
       </div>
 
@@ -66,10 +92,12 @@
           var FileInfo = new MPExtended.Services.TVAccessService.Interfaces.WebRecordingFileInfo(Model.FileName);
         }
         <dl class="dl-horizontal">
-          <dt>Filesize:</dt>
-          <dd>@(((float)FileInfo.Size / 1073741824).ToString("0.00")) GB @ViewBag.Resolution</dd>
-          <dt>Directory:</dt>
+          <dt>Path:</dt>
           <dd>@FileInfo.Path</dd>
+          <dt>Filesize:</dt>
+          <dd>@(((float)FileInfo.Size / 1073741824).ToString("0.00"))GB</dd>
+          <dt>Resolution:</dt>
+          <dd>@ViewBag.Resolution.ToLower()</dd>
         </dl>
       </div>
     </div>
