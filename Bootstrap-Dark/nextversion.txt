@@ -1,0 +1,4 @@
+Only show 'players' dropdown list when more then one player
+Added current chosen genre (for movies and tvshows) to title of the page
+Statuspage CPU/Memory usage history persistent after refresh/leaving page
+Add new WebMP 0.5.4 feature: watched status for movies (not working right?)

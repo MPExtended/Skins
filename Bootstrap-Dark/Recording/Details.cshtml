@@ -1,0 +1,100 @@
+﻿@using MPExtended.Services.Common.Interfaces
+@model MPExtended.Services.TVAccessService.Interfaces.WebRecordingBasic
+@{ViewBag.Title = Model.Title;}
+
+<div id="confirmModal" class="modal hide fade">
+    
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Delete Record</h3>
+    </div>
+    
+    <div class="modal-body"> 
+        <p>Do you want to delete record: @Model.ChannelName: @Model.Title - @Model.StartTime?</p>
+    </div>
+    
+    <div class="modal-footer">
+        <a href="@Url.Action("DeleteRecording", new { id = Model.Id })" class="btn btn-danger">Yes</a>
+        <a href="#" class="btn btn-primary" data-dismiss="modal">No</a>
+    </div>
+</div>
+
+<div class="row-fluid">
+  <div class="span8 tabs-left">
+    <ul class="breadcrumb">
+        <li><a href='@Url.Action("Index", "Recording", new { })'>@UIStrings.Recordings</a> <span class="divider">/</span></li>
+        <li class="active">@Model.ChannelName: @Model.Title</li>
+    </ul>
+
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#summary" data-toggle="tab">Summary</a></li>
+      <li><a href="#details" data-toggle="tab">Details</a></li>
+      <li><a href="#fileinfo" data-toggle="tab">File information</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane fade active in" id="summary">
+        <p>@if (string.IsNullOrWhiteSpace(Model.Description))
+        {<text>No description.</text> }
+      else
+      { @Model.Description} </p>
+      </div>
+
+      <div class="tab-pane fade" id="details">
+        <dl class="dl-horizontal">
+          @if (!string.IsNullOrEmpty(Model.EpisodeName))
+          {
+            <dt>Episode:</dt>
+            <dd>@Model.EpisodeName</dd>}
+          @if (!string.IsNullOrEmpty(Model.ChannelName))
+          {
+            <dt>Channel:</dt>
+            <dd>@Model.ChannelName</dd>}
+          <dt>@UIStrings.RecordedOn:</dt>
+          <dd>@Model.StartTime</dd>
+          @if (!string.IsNullOrEmpty(Model.Genre))
+          {
+            <dt>Genre:</dt>
+            <dd>@Model.Genre</dd>}
+          <dt>Duration:</dt>
+          <dd>@(String.Format("{0:mm}", (Model.EndTime - Model.StartTime))) min.</dd>
+        </dl>
+      </div>
+
+      <div class="tab-pane fade" id="fileinfo">
+        @{
+          var FileInfo = new MPExtended.Services.TVAccessService.Interfaces.WebRecordingFileInfo(Model.FileName);
+        }
+        <dl class="dl-horizontal">
+          <dt>Filesize:</dt>
+          <dd>@(((float)FileInfo.Size / 1073741824).ToString("0.00")) GB @ViewBag.Resolution</dd>
+          <dt>Directory:</dt>
+          <dd>@FileInfo.Path</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+	
+	<div class="span4">
+		<div class="span12 row center">
+			<img class="img-polaroid img-rounded" src='@Url.Action("PreviewImage", new { id = Model.Id, width = 250 })' width="250" />
+		</div>
+		
+		<div class="btn-toolbar center">
+			<div class="btn-group" style="margin-top: 10px;">
+				<a class="btn" href='@Url.Action("Download", "Stream", new { item = Model.Id, type = WebMediaType.Recording })'><i class="icon-download-alt"></i> @UIStrings.Download</a>
+				<a class="btn" href='@Url.Action("Watch", new { id = Model.Id })'><i class="icon-play"></i> @UIStrings.Play</a>
+                <a href="#confirmModal" role="button" class="btn btn-danger" data-toggle="modal"><i class="icon-trash icon-white"></i></a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+$('.confirm-delete').on('click', function(e) {
+    e.preventDefault();
+
+    var id = $(this).data('id');
+    $('#modal-from-dom').data('id', id).modal('show');
+});
+</script>

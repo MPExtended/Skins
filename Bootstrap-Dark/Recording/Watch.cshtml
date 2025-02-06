@@ -1,0 +1,15 @@
+﻿@model MPExtended.Services.TVAccessService.Interfaces.WebRecordingBasic
+@{ViewBag.Title = String.Format("{0}: {1}", UIStrings.Play, Model.Title);}
+
+<ul class="breadcrumb">
+  <li><a href='@Url.Action("Index", "Recording", new { })'>@UIStrings.Recordings</a> <span class="divider">/</span></li>
+  <li><a href='@Url.Action("Details", "Recording", new { id = @Model.Id })'>@Model.ChannelName: @Model.Title</a> <span class="divider">/</span></li>
+  <li class="active">@UIStrings.Play</li>
+</ul>
+
+@{Html.RenderAction("Player", "Stream", new
+  {
+    type = MPExtended.Services.Common.Interfaces.WebMediaType.Recording,
+    itemId = @Model.Id
+  });
+}

@@ -1,0 +1,19 @@
+﻿@model PlayerViewModel
+
+@Html.Partial(Model.PlayerViewName)
+
+@if(Model.TranscoderSelectList.Count() > 1) {
+<div class="add-margin form-inline">
+@using ( Html.BeginForm() )
+{
+	<p>
+	@Html.DropDownList("transcoder", Model.TranscoderSelectList)
+	<input type="submit" value="Change player" class="btn" />
+	</p>
+}
+</div>
+}
+
+<p class="add-margin">
+@Html.ActionLink(UIStrings.DownloadPlaylist, "Playlist", new { type = Model.MediaType, itemId = Model.MediaId, transcoder = Model.Transcoder })
+</p>

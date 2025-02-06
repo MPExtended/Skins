@@ -1,0 +1,845 @@
+/* Sticky footer styles
+	-------------------------------------------------- */
+html,body {
+	height: 100%;
+}
+body {
+	height: 100%;
+}
+::selection {
+	background: #F2D349; /* Safari */
+}
+::-moz-selection {
+	background: #F2D349;
+}
+/* Wrapper for page content to push down footer */
+#wrap {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -60px; /* Negative indent footer by it's height */
+}
+/* Set the fixed height of the footer here */
+#push {
+	height: 80px;
+}
+#footer {
+	height: 60px;
+}
+#footer {
+	background-color: #252a30;
+}
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+	#footer {
+		margin-left: -20px;
+		margin-right: -20px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+}
+@media (min-width: 980px) {
+	#wrap > .container {
+		padding-top: 40px;
+	}
+}
+@media (max-width: 979px) {
+	#wrap > .container {
+		margin-top: -20px;
+	}
+}
+.container .credit {
+	margin: 20px 0;
+}
+
+.navbar {
+-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+   -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+a.brand.hidden-desktop {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+td input, td select, td input[type="text"] {
+	margin: 0;
+}
+
+h2 {
+clear: both;
+}
+
+.add-margin {
+	margin-bottom: 20px;
+	margin-top: 10px;
+}
+.center {
+	text-align: center;
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+.clear {
+	clear: both;
+}
+.hide-overflow {
+	white-space: nowrap;
+	overflow: hidden; 
+	text-overflow: ellipsis;
+}
+
+.dateTimeInput {
+	min-width: 150px;
+}
+
+
+.on {
+background: #00ff00;
+}
+.off {
+background; #ff0000;
+}
+
+
+/*
+	LISTS / FACADE
+*/
+.list {
+	list-style-type: none;
+	padding: 0;
+	margin: 5px 0;
+	clear: both;
+}
+.list li {
+  border-top: 1px solid #222;
+  line-height: 20px;
+}
+.list h4 {
+	padding: 5px 0;
+	font-size: 11pt;
+	color: #0088cc;
+}
+.list img {
+    -webkit-filter: grayscale(0);
+    filter: none;
+	-webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+	border-radius: 6px;
+}
+.list img:hover {
+    -webkit-filter: grayscale(1);
+    filter: grayscale(1);
+}
+.list li a {
+	display: block;
+	text-decoration: none;
+    line-height: 20px;
+	color: #fff;
+	overflow: hidden;
+}
+
+
+.list.simple a ,
+.list.coverlist a {
+	padding: 4px 8px;
+}
+.list.simple h4 ,
+.list.coverlist h4 {
+	padding: 0;
+}
+.list.simple li:nth-child(even),
+.list.coverlist li:nth-child(even) {
+	background: #000;
+}
+.list.simple li:nth-child(odd),
+.list.coverlist li:nth-child(odd) {
+	background: #060606
+}
+
+
+/* SIMPLE */
+.list.simple img {
+	display: none !important; /*fix for some browsers when using lazy image loader*/
+}
+
+
+/* COVERLIST */
+.list.coverlist li {
+	overflow: hidden;
+}
+.list.coverlist img {
+	float: left;
+	height: 90px;
+	margin-right: 10px;
+	display: block !important;  /*to compensate the important display none above*/
+}
+.list.coverlist.movie img {
+	width: 62px;
+}
+.list.coverlist.picture img {
+	width: 90px;
+}
+.list.coverlist.music img {
+	width: 90px;
+}
+.list.coverlist.genre img {
+	width: 90px;
+}
+.list.coverlist.thumbs img {
+	width: 160px;
+}
+.list.coverlist.drive img,
+.list.coverlist.folder img
+.list.coverlist.file img {
+	width: 90px;
+}
+
+
+/* COMBINATION */
+.list.covers.banners li,
+.list.covers.posters li,
+.list.covers.movie li,
+.list.covers.genre li,
+.list.covers.thumbs li,
+.list.covers.picture li,
+.list.covers.drive li,
+.list.covers.folder li,
+.list.covers.file li,
+.list.covers.music li {
+	float: left;
+	text-align: center;
+	list-style-type: none;
+	margin-bottom: 20px;
+	border: 0;
+}
+.list.covers.banners a,
+.list.covers.posters a,
+.list.covers.movie a,
+.list.covers.genre a,
+.list.covers.thumbs a,
+.list.covers.picture a,
+.list.covers.drive a,
+.list.covers.folder a,
+.list.covers.file a,
+.list.covers.music a {
+	display: block;
+	text-decoration: none;
+	color: #FFF;
+	background: #060606;
+	padding: 10px;
+}
+.list.covers.banners h4, .list.covers.banners h5,.list.covers.banners p,
+.list.covers.posters h4, .list.covers.posters h5,.list.covers.posters p,
+.list.covers.movie h4,   .list.covers.movie h5,  .list.covers.movie p,
+.list.covers.genre h4,   .list.covers.genre h5,  .list.covers.genre p,
+.list.covers.thumbs h4,  .list.covers.thumbs h5, .list.covers.thumbs p,
+.list.covers.picture h4, .list.covers.picture h5,.list.covers.picture p,
+.list.covers.drive h4,   .list.covers.drive h5,  .list.covers.drive p,
+.list.covers.folder h4,  .list.covers.folder h5, .list.covers.folder p,
+.list.covers.file h4,    .list.covers.file h5,   .list.covers.file p,
+.list.covers.music h4,   .list.covers.music h5,  .list.covers.music p {
+	margin: 0;
+	white-space: nowrap;
+	overflow: hidden; 
+	text-overflow: ellipsis;
+}
+
+.list li a {
+	transition: background .3s;
+	-moz-transition: background .3s; /* Firefox 4 */
+	-webkit-transition: background .3s; /* Safari and Chrome */
+	-o-transition: background .3s; /* Opera */
+}
+.list li a:hover {
+	background: #0f0f0f !important;
+}
+.list li a:active {
+	background: #222 !important;
+}
+
+/* IMAGE SIZES in COVER VIEW */
+.list.covers.banners li *{
+	max-width: 214px;
+}
+.list.covers.banners img {
+	height: 41px;
+	width: 214px;
+}
+.list.covers.banners.large li *{
+	max-width: 370px;
+}
+.list.covers.banners.large img{
+	height: 70px;
+	width: 370px;
+}
+.list.covers.banners img.poster {
+    display: none !important;
+}
+
+.list.covers.posters li * {
+	max-width: 126.25px;
+}
+.list.covers.posters img {
+	height: 189px;
+	width: 126.25px;
+}
+.list.covers.posters img.banner {
+    display: none !important;
+}
+
+.list.covers.thumbs li *{
+	max-width: 126.25px;
+}
+.list.covers.thumbs img {
+	height: 71px;
+	width: 126.25px;
+}
+.list.covers.thumbs.large li *{
+	max-width: 214px;
+}
+.list.covers.thumbs.large img{
+	height: 120px;
+	width: 214px;
+}
+
+.list.covers.movie li * {
+	max-width: 126.25px;
+}
+.list.covers.movie img {
+	height: 189px;
+	width: 126.25px;
+}
+.list.covers.movie.large li * {
+	max-width: 214px;
+}
+.list.covers.movie.large img {
+	height: 320px;
+	width: 214px;
+}
+
+.list.covers.picture li * {
+	max-width: 126.25px;
+}
+.list.covers.picture img {
+	height: 126.25px;
+	width: 126.25px;
+}
+.list.covers.picture.large li * {
+	max-width: 214px;
+}
+.list.covers.picture.large img {
+	height: 214px;
+	width: 214px;
+}
+
+.list.covers.drive li * {
+	max-width: 126.25px;
+}
+.list.covers.drive img {
+	height: 126.25px;
+	width: 126.25px;
+}
+.list.covers.drive.large li * {
+	max-width: 214px;
+}
+.list.covers.drive.large img {
+	height: 214px;
+	width: 214px;
+}
+
+.list.covers.folder li * {
+	max-width: 126.25px;
+}
+.list.covers.folder img {
+	height: 126.25px;
+	width: 126.25px;
+}
+.list.covers.folder.large li * {
+	max-width: 214px;
+}
+.list.covers.folder.large img {
+	height: 214px;
+	width: 214px;
+}
+
+.list.covers.file li * {
+	max-width: 126.25px;
+}
+.list.covers.file img {
+	height: 126.25px;
+	width: 126.25px;
+}
+.list.covers.file.large li * {
+	max-width: 214px;
+}
+.list.covers.file.large img {
+	height: 214px;
+	width: 214px;
+}
+
+.list.covers.music li * {
+	max-width: 126.25px;
+}
+.list.covers.music img {
+	height: 126.25px;
+	width: 126.25px;
+}
+.list.covers.music.large li * {
+	max-width: 214px;
+}
+.list.covers.music.large img {
+	height: 214px;
+	width: 214px;
+}
+
+.list.covers.genre li * {
+	max-width: 126.25px;
+}
+.list.covers.genre img {
+	height: 126.25px;
+	width: 126.25px;
+}
+.list.covers.genre.large li * {
+	max-width: 214px;
+}
+.list.covers.genre.large img {
+	height: 214px;
+	width: 214px;
+}
+
+.list li.open {
+	background: #f0f0f0;
+}
+.list li.open h4.grouptitle {
+	color: #fff;
+}
+.list li h4.grouptitle:before {
+	content: "+ ";
+}
+.list li.open h4.grouptitle:before {
+	content: "- ";
+}
+
+
+/*
+	Playlist styling
+*/
+#playlist li a h4 {
+	margin-left: 20px;
+}
+#playlist li a i.icon-play {
+	float: left;
+	margin-top: 12px;
+}
+#playlist li a .duration {
+	float: right;
+	margin: 10px;
+}
+
+
+/*
+ Videoplayer styling
+*/
+.dragdealer {
+	position: relative;
+	height: 20px;
+	background: #212121; /* Old browsers */
+	background: -moz-linear-gradient(top,	#212121 50%,#444444 52%,#212121 99%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#212121), color-stop(71%,#444444), color-stop(77%,#fffcfc), color-stop(83%,#444444), color-stop(99%,#2a2a2a)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,	#212121 50%,#444444 52%,#212121 99%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,	#212121 50%,#444444 52%,#212121 99%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,	#212121 50%,#444444 52%,#212121 99%); /* IE10+ */
+	background: linear-gradient(to bottom,	#212121 50%,#444444 52%,#212121 99%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#212121', endColorstr='#2a2a2a',GradientType=0 ); /* IE6-9 */
+}
+.dragdealer .handle {
+	position: absolute;
+	cursor: pointer;
+}
+.dragdealer .red-bar {
+	width: 16px;
+	margin-left: -1px;
+	margin-top: 2px;
+	height: 16px;
+	line-height: 15px;
+	text-align: center;
+}
+.dragdealer .disabled {
+	background: #898989;
+}
+
+div#hlsplayer div#loader {
+	width: 100%; 
+	height: 100%;
+	text-align: center;
+}
+
+div#hlsplayer div#loader img {
+	margin-top: 50px;
+}
+
+
+/* rating stars */
+.ratingstar {
+	background: url('img/starrating_base.png') no-repeat;
+	width: 180px;
+	height: 18px;
+	margin: 10px 0;
+}
+.ratingstar div {
+	background: url('img/starrating_filled.png') no-repeat;
+	height: 18px;
+}
+.infolist .ratingstar {
+	float: right;
+	margin-top: 5px;
+	padding-bottom: 5px;
+}
+
+
+.validation-summary-errors {
+	max-width: 1000px;
+	margin: 0 auto;
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
+  padding: 8px 35px 8px 14px;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  background-color: #fcf8e3;
+  border: 1px solid #fbeed5;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}
+
+
+
+
+
+/* 
+	Fanart header
+*/
+#fanartheader .carousel-inner, #fanartheader .carousel-caption, #fanartheader .carousel {
+	border-bottom-right-radius: 20px;
+	border-bottom-left-radius: 20px;
+}
+#fanartheader .item {
+	height: 220px;
+}
+#fanartheader  img {
+	position: relative;
+	top: -40%;
+}
+.carousel-caption h1,
+.carousel-caption .lead {
+	margin: 0;
+	line-height: 1.25;
+	color: #fff;
+	text-shadow: 0 1px 1px rgba(0,0,0,.4);
+}
+
+
+
+/*
+*** 	RESPONSIVE DESIGN
+*/
+@media (max-width: 1200px) {
+	.home li:nth-child(5) {
+		display: none;
+	}
+	#fanartheader  img {
+		top: -25%;
+	}
+}
+@media (min-width: 326px) and (max-width: 979px) {
+	.home .list.covers li * {
+		max-width: 126.25px !important;
+	}
+	.home .list.covers.thumbs img {
+		height: 71px !important;
+	}
+	.home .list.covers.movie img {
+		height: 189px !important;
+	}
+	.home .list.covers.picture img {
+		height: 126.25px !important;
+	}
+	.home .list.covers.drive img,
+	.home .list.covers.folder img,
+	.home .list.covers.file img {
+		height: 126.25px !important;
+	}
+	.home .list.covers.genre img,
+	.home .list.covers.music img {
+		height: 126.25px !important;
+	}
+}
+@media (max-width: 979px) {
+	.list.covers a {
+		padding: 8px !important;
+	}
+	.list.covers.large a {
+		padding: 10px !important;
+	}
+	.list.covers.banners.large img {
+		width: 340px;
+	}
+	.home .list.covers.large a {
+		padding: 8px !important;
+	}
+	
+	.home li:nth-child(5) {
+		display: block;
+	}
+	#fanartheader  .item {
+		height: 170px;
+	}
+	#fanartheader  img {
+		top: -25%;
+	}
+}
+@media (max-width: 767px) {
+	.home li:nth-child(5) {
+		display: none;
+	}
+	.list.covers.banners.large img {
+		width: 370px;
+	}
+}
+@media (max-width: 626px) {
+	.list.covers a {
+		padding: 3px !important;
+	}
+	.list.covers.large a {
+		padding: 10px !important;
+	}
+	.home .list.covers.large a {
+		padding: 3px !important;
+	}
+
+	.home li:nth-child(4) {
+		display: none;
+	}
+}
+@media (max-width: 500px) {
+
+}
+@media (max-width: 455px) {
+	.home li:nth-child(3) {
+		display: none;
+	}
+}
+@media (max-width: 440px) {
+	/* force small banner size for large banners */
+	.list.covers.banners.large li *{
+		max-width: 214px !important;
+	}
+	.list.covers.banners.large img {
+		height: 41px !important;
+	}
+}
+@media (max-width: 325px) {
+	.list.covers.thumbs li *, .list.covers.movie li *, .list.covers.picture li *, .list.covers.music li *, .list.covers.genre li * {
+		max-width: 214px !important;
+	}
+	.list.covers.thumbs img{
+		height: 120px !important;
+	}
+	.list.covers.movie img {
+		height: 320px !important;
+	}
+	.list.covers.picture img {
+		height: 214px !important;
+	}
+	.list.covers.genre img,
+	.list.covers.music img {
+		height: 214px !important;
+	}
+	.list.covers.drive img,
+	.list.covers.folder img,
+	.list.covers.file img {
+		height: 214px !important;
+	}
+}
+
+
+
+@media all and (max-width:550px) { /*mobile*/ /*small menu*/
+	td {
+		max-width: 150px;
+		white-space: nowrap;
+		overflow: hidden; 
+		text-overflow: ellipsis;
+	}
+	td input, td select {
+		max-width: 150px;
+	}
+}
+
+.watch-s{
+  border-left: 1px solid gray;
+}
+
+.watched-container {
+  position: relative;
+}
+
+.watched {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 50px !important;
+  width: 50px !important;
+}
+
+.watch {
+  position: absolute;
+  top: 0 !important;
+  left: 0 !important;
+  height: 30px !important;
+  width: 30px !important;
+}
+
+.intrinsicRatio {
+  position:relative;
+  overflow:visible;
+  height:0;
+}
+
+.ratio16to9 {
+  padding-bottom:56.25%;
+}
+
+.intrinsicRatio div,
+.intrinsicRatio object,
+.intrinsicRatio embed {
+  position:absolute !important;
+  /* Everything following breaks iPhone and iPad(!) */
+  /*
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:teal;
+  */
+}
+
+/* Fancybox */
+
+.fancybox-button--info {
+  padding: 14px 8px 8px 8px;
+}
+
+@media all {
+  .fancybox-thumbs {
+    top: auto;
+    width: auto;
+    bottom: 0;
+    left: 0;
+    right : 0;
+    height: 95px;
+    padding: 10px 10px 5px 10px;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  
+  .fancybox-thumbs__list a:before {
+    border: 4px solid #0088cc;
+  }
+
+  .fancybox-show-thumbs .fancybox-inner {
+    right: 0;
+    bottom: 95px;
+  }
+}
+
+/* ScrollUp */
+
+div.scrollup {
+  position: fixed;
+  color: #fff;
+  background-color: #0088cc;
+  right: 20px;
+  bottom: 0px;
+  padding: 5px 5px;
+  font-size: 15px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  cursor: pointer;
+  display: none;
+  text-align: center;
+}
+
+div.scrollup:hover {
+  background-color: #000;
+}
+
+/* PreLoader */
+
+.preloader {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: #121417;
+  z-index: 1001;
+}
+
+.preloader__row {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  width: 70px;
+  height: 70px;
+  margin-top: -35px;
+  margin-left: -35px;
+  text-align: center;
+  animation: preloader-rotate 2s infinite linear;
+}
+
+.preloader__item {
+  position: absolute;
+  display: inline-block;
+  top: 0;
+  background-color: #337ab7;
+  border-radius: 100%;
+  width: 35px;
+  height: 35px;
+  animation: preloader-bounce 2s infinite ease-in-out;
+}
+
+.preloader__item:last-child {
+  top: auto;
+  bottom: 0;
+  animation-delay: -1s;
+}
+
+@keyframes preloader-rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes preloader-bounce {
+
+  0%,
+  100% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1);
+  }
+}
+
+.loaded_hiding .preloader {
+  transition: 0.3s opacity;
+  opacity: 0;
+}
+
+.loaded .preloader {
+  display: none;
+}

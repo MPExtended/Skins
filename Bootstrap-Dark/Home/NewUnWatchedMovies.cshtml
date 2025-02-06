@@ -1,0 +1,20 @@
+﻿@model IEnumerable<MovieViewModel>
+@{ViewBag.showTitle = false;}
+
+@if (ViewBag.Availability.Movies)
+{
+<h2>@Html.ActionLink(UIStrings.LatestMovies, "NewUnWatchedMovies", "Home", new { count = 50, unwatched = true }, new { })</h2>
+
+<ul class="list movie covers large">
+@foreach (var movie in Model)
+{
+	<li>
+		<a href='@Url.Action("Details", "MovieLibrary", new { movie = movie.Id }, null)'>
+			<img class="lazy" width="214" height="214" src='@Url.ContentLink("Images/default/movie-cover.png")' data-original='@Url.Action("Cover", "MovieLibrary", new { movie = movie.Id, width = 214 })' alt="@movie.Movie.Title" />
+			<h4>@movie.Movie.Title</h4>
+            <p>@movie.Movie.Year</p>
+		</a>
+	</li>
+}
+</ul>
+}
