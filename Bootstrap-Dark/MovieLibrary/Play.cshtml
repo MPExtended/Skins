@@ -1,0 +1,16 @@
+﻿@model MovieViewModel
+@{ViewBag.Title = Model.Movie.Title;}
+
+<ul class="breadcrumb">
+  <li><a href='@Url.Action("Index", "MovieLibrary", new { })'>@UIStrings.Movies</a> <span class="divider">/</span></li>
+  <li><a href='@Url.Action("Details", "MovieLibrary", new { movie = @Model.Movie.Id })'>@Model.Movie.Title</a> <span class="divider">/</span></li>
+  <li class="active">@UIStrings.Play</li>
+</ul>
+
+@{
+  Html.RenderAction("Player", "Stream", new
+  {
+    type = MPExtended.Services.Common.Interfaces.WebMediaType.Movie,
+    itemId = @Model.Id
+  });
+}

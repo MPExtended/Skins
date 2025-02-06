@@ -1,0 +1,36 @@
+﻿@model PlayerViewModel
+@using MPExtended.Services.Common.Interfaces
+           
+@Html.Assets().AddViewStylesheet("Stream/HLS/HLSPlayer.css")
+@Html.Assets().AddViewScript("Stream/HLS/HLSPlayer.js")
+@Html.Assets().AddViewScript("Stream/HLS/hls.min.js")
+
+<div class="intrinsicRatio ratio16to9">
+	<div id="hlsplayer" style="width: 100%; height: 100%; background: #000;"
+                    data-url="@Url.Action("StartHttpLiveStream", "Stream", new { type = Model.MediaType, 
+                                                                                 itemId = Model.MediaId, 
+                                                                                 fileindex = 0,
+                                                                                 transcoder = Model.TranscoderProfile.Name, 
+                                                                                 continuationId = Model.ContinuationId })">
+      <div id="poster">
+        @if (Model.MediaType == WebMediaType.Movie)
+        {
+          <img src="@Url.Action("Fanart", "MovieLibrary", new { movie = @Model.MediaId, width=1170 })" />
+        }
+        else if (Model.MediaType == WebMediaType.TVEpisode)
+        {
+          <img src="@Url.Action("EpisodeImage", "TVShowsLibrary", new { episode = @Model.MediaId, width=1170 })" />
+        }
+        else if (Model.MediaType == WebMediaType.Recording)
+        {
+          <img src="@Url.Action("PreviewImage", "Recording", new { id = Model.MediaId, width=1170 })" />
+        }
+      </div>
+      <div id="loader">
+        <img src="@Url.ContentLink("Images/loader.gif")" />
+      </div>
+	</div>
+    <div id="error">
+        @UIStrings.FailedToStartStream
+    </div>
+</div>

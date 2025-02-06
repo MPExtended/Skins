@@ -1,0 +1,13 @@
+﻿@model IEnumerable<MPExtended.Services.TVAccessService.Interfaces.WebScheduledRecording>
+
+@if (ViewBag.Availability.TAS && Model.Count() > 0)
+{
+	<h2>@UIStrings.TodaysSchedules</h2>
+	
+	<ul class="list simple">
+	@foreach (var schedule in Model)
+	{
+		<li><h4>&nbsp;@schedule.Title - @schedule.StartTime.ToShortTimeString() - @schedule.EndTime.ToShortTimeString()</h4></li>
+	}
+	</ul>
+} 

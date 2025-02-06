@@ -1,0 +1,86 @@
+﻿@model IEnumerable<SearchResultsViewModel>
+@{ViewBag.Title = UIStrings.Search + " '" + Request["text"] + "'";}
+
+<script type="text/javascript">
+	$("#facade").ready(function() {
+		var types = [];
+		
+		$(".type").each(function() {
+			var type = $(this).html();
+
+			if(jQuery.inArray(type, types) == -1) {
+				types.push(type);
+				$("#filtertypes").append("<li><a href=\"javascript:filter('" + type + "');\">" + type + "</a></li>");
+			}
+		});
+	});
+	
+	function filter(filterType) {
+		if(filterType == "all") {
+			$("#facade li").css('display', 'block')
+			
+			//apply new list css
+			$("#facade li:odd").css('background', '#fff');
+			$("#facade li:even").css('background', '#f9f9f9');
+		}else{
+			$("#facade li").css('display', 'none');
+			$("#facade li[data-type=\""+filterType+"\"]").css('display', 'block');
+			
+			ResetListColors();
+		}
+	}
+</script>
+
+<div class="add-margin">
+<div class="btn-group">
+	<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+	Filter
+	<span class="caret"></span>
+	</a>
+	<ul class="dropdown-menu" id="filtertypes">
+		<li><a href="javascript:filter('all')">All</a></li>
+	</ul>
+</div>
+</div>
+
+@if(Model.Count() == 0)
+{
+	<p>@UIStrings.SorryYourSearchDidNotYieldAnyResults</p>
+}
+
+<ul class="list coverlist music" id="facade">
+@foreach (var result in Model)
+{
+	
+	<li data-type="@result.Type">
+		<a href="@result.URL">
+			@if( result.Type == SearchResultType.Movie ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/Movie.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.Picture  ) { <img width="90" height="90" src='@Url.ContentLink("img/default/Picture.png")' alt="@result.Title" /> }
+			
+			@if( result.Type == SearchResultType.MusicTrack ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/MusicTrack.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.MusicAlbum ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/MusicAlbum.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.MusicArtist ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/MusicArtist.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.Playlist ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/Playlist.png")' alt="@result.Title" /> }
+			
+			@if( result.Type == SearchResultType.TVShow ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/TVShow.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.TVSeason ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/TVSeason.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.TVEpisode ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/TVEpisode.png")' alt="@result.Title" /> }
+			
+			@if( result.Type == SearchResultType.Drive ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/Drive.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.Folder ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/Folder.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.File ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/File.png")' alt="@result.Title" /> }
+			
+			@if( result.Type == SearchResultType.Schedule ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/Schedule.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.Recording ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/Recording.png")' alt="@result.Title" /> }
+			
+			@if( result.Type == SearchResultType.RadioGroup ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/RadioGroup.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.RadioChannel ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/RadioChannel.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.TVGroup ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/TVGroup.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.TVChannel ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/TVChannel.png")' alt="@result.Title" /> }
+			@if( result.Type == SearchResultType.Program ) { <img width="90" height="90" src='@Url.ContentLink("img/placeholders/Program.png")' alt="@result.Title" /> }
+			<h4>@result.Title</h4>
+			<p class="type">@result.Type</p>
+		</a>
+	</li>
+}
+</ul>

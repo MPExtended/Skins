@@ -1,0 +1,141 @@
+﻿@model TVGuideViewModel
+@{ViewBag.Title = UIStrings.TVGuide;}
+
+@Html.Assets().AddContentStylesheet("css/datetimepicker.css")
+@Html.Assets().AddViewScript("Content/js/bootstrap-datetimepicker.min.js")
+@Html.Assets().AddViewStylesheet("Television/TVGuide.css")
+
+<script type="text/javascript">
+$(function() {
+	$('.dateTimeInput').datetimepicker({
+		format: 'd-m-yyyy hh:ii',
+		autoclose: true,
+		todayBtn: true,
+		minuteStep: 30
+	}).change(
+	function () {
+		this.form.submit();
+	});
+	
+	$("#group").change(function () {
+		this.form.submit();
+	});
+	
+	
+	if(localStorage['TVGuideView'] == 'lists') {
+		$("#TVGuide").addClass('lists');
+	}else{
+		$("#TVGuide a").tooltip();
+	}
+	
+	// Execute on load
+	checkWidth();
+
+	// Bind event listener
+	$(window).resize(checkWidth);
+});
+
+
+function changeView() {
+	$("#TVGuide").toggleClass(function() {
+		 if (!$(this).is('.lists')) {
+			localStorage['TVGuideView'] = 'lists';
+			$("#TVGuide a").tooltip('destroy');
+			return 'lists';
+		}else{
+			localStorage['TVGuideView'] = 'normal';
+			$("#TVGuide a").tooltip();
+		}
+	});
+}
+
+//add lists class when screen smaller then 670px
+var $window = $(window);
+	
+// Function to handle changes to style classes based on window width
+function checkWidth() {
+	if(localStorage['TVGuideView'] == 'normal')
+	{
+		if ($window.width() < 670) {
+			$('#TVGuide').addClass('lists');
+			$("#TVGuide a").tooltip('destroy');
+		};
+
+		if ($window.width() >= 670) {
+			$('#TVGuide').removeClass('lists');
+			$("#TVGuide a").tooltip();
+		}
+	}
+}
+
+</script>
+
+<div id="TVGuideNavigation">
+	@using (Html.BeginForm("TVGuide", "Television", FormMethod.Get, new { @class="form-inline" } ))
+	{
+		@Html.DropDownList("group", Model.Groups)
+		@Html.EditorFor(model => model.GuideStart, "Time", "time", new { openOnFocus = true })
+		/*@Html.Hidden("time", Model.GuideStart.ToString("s"))*/
+		<input id="changeViewBtn" type="button" class="btn" onclick="changeView();" value="Toggle view" />
+	}
+</div>
+
+@using (Html.BeginForm("TVGuide", "Television", FormMethod.Get))
+{
+@Html.Hidden("group", Model.GroupId)
+<div id="TVGuide">
+	<div class="headerrow">
+		<div class="headerspacer">
+			<div class="btn-group">
+				<button name="time" value='@String.Format("{0:g}", Model.EarlierGuideStart)' class="btn earlier">@UIStrings.Earlier <i class="icon-backward"></i></button>
+				<button name="time" value='@String.Format("{0:g}", Model.LaterGuideStart)' class="btn later"><i class="icon-forward"></i> @UIStrings.Later</button>
+			</div>
+		</div>
+		<ul class="programs">
+		@{
+		foreach (var marker in Model.TimeMarkers)
+		{
+			<li>
+				<div class="headertime">@String.Format("{0:t}", marker.Time)</div>
+			</li>
+		}
+		}
+		</ul>
+	</div>
+	@{
+	foreach (var channel in @Model.Channels)
+	{<div class="channelrow">
+		<a class="channelname" href='@Url.Action("WatchLiveTV", "Television", new { channelId = channel.Id })'>
+			<img src='@Url.Action("ChannelLogo", new { channelId = channel.Id, width = 50, height = 50 })' width="50" height="50" alt="@channel.DisplayName" />
+			@channel.DisplayName
+		</a>
+		<ul class="programs">
+		@{
+		DateTime? lastEnd = null;
+		double leftOffset = 0;
+		
+		foreach (var program in channel.Programs)
+		{
+			if (lastEnd != null && lastEnd < program.StartTime)
+			{
+				leftOffset += 100 * (program.StartTime - lastEnd.Value).TotalMinutes / (Model.GuideEnd - Model.GuideStart).TotalMinutes;
+			}
+			
+			<li style="width: @program.GetCssPercentageWidth(); left: @leftOffset%;">
+			@{ if (program.GetPercentageWidth() > 1)
+				{
+					<a title='@String.Format("{0:t}", @program.StartTime): @program.Title' href='@Url.Action("ProgramDetails", new { programId = program.Id })' class='program @(program.IsCurrent ? "current" : "") @(program.IsScheduled ? "scheduled" : "")'>
+						<span class="time">@String.Format("{0:t}", @program.StartTime): </span>@program.Title
+					</a>
+				}
+			}
+			</li>
+		
+			lastEnd = program.EndTime;
+		}
+		}
+		</ul>
+</div>}
+	}
+</div>
+}

@@ -1,0 +1,50 @@
+﻿@model MPExtended.Services.TVAccessService.Interfaces.WebChannelDetailed
+@{
+  var ProgramTitle = Model.CurrentProgram != null ? Model.CurrentProgram.Title : UIStrings.Unknown;
+  ViewBag.Title = String.Format("{0}: {1}", UIStrings.LiveTV, Model.Title);
+}
+
+<ul class="breadcrumb">
+  <li><a href='@Url.Action("TVGuide", "Television", new { })'>@UIStrings.TVGuide</a> <span class="divider">/</span></li>
+  <li class="active">@Model.Title</li>
+</ul>
+
+<style type="text/css">
+  #tvinfo {
+    overflow: hidden;
+    height: 80px;
+    margin-bottom: 20px;
+  }
+
+  #tvinfo img {
+    float: left;
+    margin-right: 10px;
+    width: 80px;
+    height: 80px;
+  }
+
+  #tvinfo p {
+    line-height: 80px;
+    height: 80px;
+  }
+</style>
+
+<script type="text/javascript">
+$(function() {
+	$("#seekbar").css('display', 'none');
+});
+</script>
+
+
+<div id="tvinfo">
+  <img src='@Url.Action("ChannelLogo", new { channelId = @Model.Id, width = 80, height = 80 })' alt="Channel Logo" />
+  <p>@Html.Raw(String.Format(UIStrings.YouAreWatchingProgram, ProgramTitle, Model.Title))</p>
+</div>
+
+
+@{Html.RenderAction("Player", "Stream", new
+  {
+    type = MPExtended.Services.Common.Interfaces.WebMediaType.TV,
+    itemId = @Model.Id
+  });
+}

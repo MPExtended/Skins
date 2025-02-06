@@ -1,0 +1,62 @@
+﻿@model IEnumerable<MPExtended.Services.MediaAccessService.Interfaces.TVShow.WebTVShowGenre>
+@{
+  ViewBag.Title = UIStrings.Genres;
+  ViewBag.showTitle = false;
+}
+
+<script type="text/javascript">
+  $("#facade").ready(function () {
+    facade(localStorage['facade_genre'], 'genreview');
+  });
+</script>
+
+<div class="form-inline add-margin">
+</div>
+<ul class="breadcrumb">
+  <li><a href='@Url.Action("Index", "TVShowsLibrary", new { })'>@UIStrings.TVShows</a> <span class="divider">/</span></li>
+  <li class="active">@UIStrings.Genres</li>
+</ul>
+
+<div class="form-inline add-margin">
+  <div class="btn-group">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+      View
+      <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <li><a href="javascript:facade('simple', 'genreview');"><i class="icon-align-justify"></i> List</a></li>
+      <li><a href="javascript:facade('genre coverlist', 'genreview');"><i class="icon-th-list"></i> Coverlist</a></li>
+      <li><a href="javascript:facade('genre covers', 'genreview');"><i class="icon-th"></i> Covers</a></li>
+      <li><a href="javascript:facade('genre covers large', 'genreview');"><i class="icon-th-large"></i> Large Covers</a></li>
+    </ul>
+  </div>
+
+  <input type="text" id="filter" placeholder="Filter" class="input-small" />
+</div>
+
+<ul class="list genre covers" id="facade">
+  @{
+    char lastLetter = '~';
+
+    foreach (var genre in Model)
+    {
+      <li class="info" data-title="@genre.Title.ToLower()" @if (!lastLetter.Equals(genre.Title[0]) && !Char.IsNumber(genre.Title[0])) { <text> id="@(genre.Title[0])" class="shortcut" </text> }>
+        <a href='@Url.Action("Genre", "TVShowsLibrary", new { genre = genre.Title })'>
+          <div class="watched-container">
+            <img class="lazy" width="214" src='@Url.ContentLink("Images/default/genre-cover.png")' data-original='@Url.Action("GenreCover", "TVShowsLibrary", new { genre = genre.Title, width = 214 })' alt="@genre.Title" />
+          </div>
+          <h4>@genre.Title</h4>
+        </a>
+      </li>
+      lastLetter = ((Char.IsNumber(genre.Title[0])) ? '#' : genre.Title[0]);
+    }
+  }
+</ul>
+
+<script type="text/javascript">
+  var letters = [];
+
+  $('.shortcut').each(function () {
+    letters.push($(this).attr('id'));
+  });
+</script>

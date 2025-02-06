@@ -1,0 +1,216 @@
+﻿@model SettingsViewModel
+@{ViewBag.Title = UIStrings.Settings;}
+
+@using (Html.BeginForm())
+{
+  <p><input type="submit" class="btn btn-primary" value="@UIStrings.Save" /></p>
+  <table class="table table-striped">
+    <tr>
+      <td>
+        @Html.LabelFor(x => x.Language)
+      </td>
+      <td>
+        @Html.DropDownListFor(x => x.Language)
+        @Html.ValidationMessageFor(x => x.Language)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.LabelFor(x => x.Skin)
+      </td>
+      <td>
+
+        @Html.DropDownListFor(x => x.Skin)
+        @Html.ValidationMessageFor(x => x.Skin)
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">&nbsp;</td>
+    </tr>
+    <tr>
+      <td>
+        @Html.LabelFor(x => x.StreamType)
+      </td>
+      <td>
+        @Html.EnumDropDownListFor(x => x.StreamType)
+        @Html.ValidationMessageFor(x => x.StreamType)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.LabelFor(x => x.EnableDeinterlace)
+      </td>
+      <td>
+        @Html.RadioButtonFor(x => x.EnableDeinterlace, "true") @UIStrings.Yes
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.RadioButtonFor(x => x.EnableDeinterlace, "false") @UIStrings.No
+        @Html.ValidationMessageFor(x => x.EnableDeinterlace)
+      </td>
+    </tr>
+    @{ if (Model.ShowTASConfiguration)
+      {
+        <tr>
+          <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+          <td>
+            @Html.LabelFor(x => x.SelectedGroup)
+          </td>
+          <td>
+            @Html.DropDownListFor(x => x.SelectedGroup)
+            @Html.ValidationMessageFor(x => x.SelectedGroup)
+          </td>
+        </tr>
+      }
+    }
+    @{ if (Model.ShowMASConfiguration)
+      {
+        <tr>
+          <td colspan="2">&nbsp;</td>
+        </tr>
+        <tr>
+          <td>
+            @Html.LabelFor(x => x.TVShowProvider)
+          </td>
+          <td>
+            @Html.DropDownListFor(x => x.TVShowProvider)
+            @Html.ValidationMessageFor(x => x.TVShowProvider)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            @Html.LabelFor(x => x.MovieProvider)
+          </td>
+          <td>
+            @Html.DropDownListFor(x => x.MovieProvider)
+            @Html.ValidationMessageFor(x => x.MovieProvider)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            @Html.LabelFor(x => x.MusicProvider)
+          </td>
+          <td>
+            @Html.DropDownListFor(x => x.MusicProvider)
+            @Html.ValidationMessageFor(x => x.MusicProvider)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            @Html.LabelFor(x => x.MusicLayout)
+          </td>
+          <td>
+            @Html.EnumDropDownListFor(x => x.MusicLayout)
+            @Html.ValidationMessageFor(x => x.MusicLayout)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            @Html.LabelFor(x => x.EnableAlbumPlayer)
+          </td>
+          <td>
+            @Html.RadioButtonFor(x => x.EnableAlbumPlayer, "true") @UIStrings.Yes
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            @Html.RadioButtonFor(x => x.EnableAlbumPlayer, "false") @UIStrings.No
+            @Html.ValidationMessageFor(x => x.EnableAlbumPlayer)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            @Html.LabelFor(x => x.PicturesProvider)
+          </td>
+          <td>
+            @Html.DropDownListFor(x => x.PicturesProvider)
+            @Html.ValidationMessageFor(x => x.PicturesProvider)
+          </td>
+        </tr>
+      }
+    }
+
+    @for (int i = 0; i < Model.Platforms.Count; i++)
+    {
+      @Html.HiddenFor(x => x.Platforms[i].Name)
+
+      <tr>
+        <td colspan="2">&nbsp;</td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <h2>@Model.Platforms[i].Name</h2>
+        </td>
+      </tr>
+
+      if (Model.ShowTASConfiguration)
+      {
+        <tr>
+          <td>
+            @Html.LabelFor(x => x.Platforms[i].Tv)
+          </td>
+          <td>
+            @Html.DropDownListFor(x => x.Platforms[i].Tv)
+            @Html.ValidationMessageFor(x => x.Platforms[i].Tv)
+          </td>
+        </tr>
+      }
+
+      if (Model.ShowMASConfiguration)
+      {
+        <tr>
+          <td>
+            @Html.LabelFor(x => x.Platforms[i].Video)
+          </td>
+          <td>
+            @Html.DropDownListFor(x => x.Platforms[i].Video)
+            @Html.ValidationMessageFor(x => x.Platforms[i].Video)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            @Html.LabelFor(x => x.Platforms[i].Audio)
+          </td>
+          <td>
+            @Html.DropDownListFor(x => x.Platforms[i].Audio)
+            @Html.ValidationMessageFor(x => x.Platforms[i].Audio)
+          </td>
+        </tr>
+      }
+    }
+  </table>
+  <p><input type="submit" class="btn btn-primary" value="@UIStrings.Save" /></p>
+}
+
+<br />
+
+<h2>@UIStrings.Multiseat</h2>
+<p>@Html.ActionLink(UIStrings.MultiseatConfiguration, "Services", new { }, new { @class = "btn btn-info" })</p>
+
+<br />
+<br />
+
+<div class="alert alert-info">
+  <h2>@UIStrings.About</h2>
+  <p>
+    @Html.Raw(String.Format(UIStrings.Version, @ViewBag.Version))
+  </p>
+</div>
+<div class="alert alert-info">
+  <h3>Skin</h3>
+  <p>
+    Bootstrap theme skin v5 by Kay Schasfoort (Dragy) | Contributed by ajs | Team Mediaportal
+  </p>
+</div>
+
+<br />
+
+<a href="https://forum.team-mediaportal.com/threads/pre-0-7-beta-mpextended-webmp-bootstrap-skin-by-ajs-hard-way.139992/">Topic on MediaPortal forum</a>
+</p>
+<h3>Credits</h3>
+<ul>
+  <li>Oxan for a lot of help and making this all possible</li>
+  <li>regurge for some ideas in his skin, Janu</li>
+  <li><a href="http://twitter.github.com/bootstrap/index.html">Twitter Bootstrap</a></li>
+  <li><a href="http://www.appelsiini.net/projects/lazyload" target="_blank">jQuery Image lazy loading plugin</a></li>
+  <li><a href="http://www.malot.fr/bootstrap-datetimepicker/index.php" target="_blank">Bootstrap DateTime picker</a></li>
+  <li><a href="http://www.flotcharts.org/" target="_blank">CPU/mem plot @@ TV Server status-page</a></li>
+  <li><a href="https://fancyapps.com/fancybox/3/" target="_blank">Fancybox JavaScript lightbox library for presenting various types of media.</a></li>
+</ul>

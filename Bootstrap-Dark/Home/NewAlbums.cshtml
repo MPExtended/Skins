@@ -1,0 +1,20 @@
+﻿@model IEnumerable<AlbumViewModel>
+@{ViewBag.showTitle = false;}
+
+@if (ViewBag.Availability.Music)
+{
+<h2>@Html.ActionLink(UIStrings.LatestAlbums, "NewAlbums", "Home", new { count = 50 }, new { })</h2>
+
+<ul class="list music covers large">
+@foreach (var album in Model)
+{
+	<li>
+		<a href='@Url.Action("Album", "MusicLibrary", new { album = album.Album.Id }, null)'>
+			<img class="lazy" width="214" height="214" src='@Url.ContentLink("Images/default/artist.png")' data-original='@Url.Action("AlbumImage", "MusicLibrary", new { album = album.Album.Id, width = 214 })' alt="@album.Album.Title" />
+			<h4>@album.Album.Title</h4>
+			<p>@album.Album.AlbumArtist</p>
+		</a>
+	</li>
+}
+</ul>
+}

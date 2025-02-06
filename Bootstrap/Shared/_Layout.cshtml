@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta name="MobileOptimized" content="380" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>@(ViewBag.Title != null ? ViewBag.Title + " | " : "")WebMediaPortal</title>
+	@Html.jQuery().EnableUI()
+	@Html.Assets().AddContentStylesheet("css/bootstrap.min.css")
+	@Html.Assets().AddContentStylesheet("css/bootstrap-responsive.min.css")
+	@Html.Assets().AddContentStylesheet("css/jquery.fancybox.min.css")
+	@Html.Assets().AddContentStylesheet("webmp-style.css")
+	@Html.Assets().AddViewScript("Content/js/jquery.lazyload.min.js")
+	@Html.Assets().AddViewScript("Content/js/bootstrap.min.js")
+    @Html.Assets().AddViewScript("Content/js/jquery.fancybox.min.js")
+	@Html.Assets().Render()
+	
+	@RenderSection("HeadHtml", false)
+	<link type="image/png" href='@Url.ContentLink("Images/favicon.png")' rel="icon" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="theme-color" content="#232323">
+	<script type="text/javascript"><!--
+	$(function() {
+		//$("a").tooltip();
+		$("img.lazy").lazyload({ threshold: 200 });
+		$("#fanartheader img").lazyload({ effect: "fadeIn" });
+		
+		$('#filter').keyup(function() {
+			$('#facade li').css('display', 'none').filter('[data-title*="' + $(this).val().toLowerCase() + '"]').css('display', 'block');
+			$('#facadepic li').css('display', 'none').filter('[data-title*="' + $(this).val().toLowerCase() + '"]').css('display', 'block');
+			ResetListColors();
+		});
+	});
+	
+	function facade(type, location) {
+		if(type != undefined)
+		{
+			$("#facade").fadeOut(100, function() { $("#facade").removeClass().addClass("list " + type).fadeIn(); });
+			var facade = 'facade_'+location;
+			localStorage[facade] = type;
+			$('html').scrollTop(1); // fix not loading of images
+		}
+	}
+	
+	function ResetListColors() {
+		//apply new list css
+		$("#facade li:visible:odd").css('background', '#fff');
+		$("#facade li:visible:even").css('background', '#f9f9f9');
+	}
+	--></script>
+</head>
+<body>
+
+<div class="preloader">
+  <div class="preloader__row">
+    <div class="preloader__item"></div>
+    <div class="preloader__item"></div>
+  </div>
+</div>
+
+<script>
+  $(window).on('load', () => {
+    $('.preloader').delay(1000).fadeOut('slow', function() {
+      $(this).remove();
+    });
+  });
+</script>
+
+<div class="scrollup">
+  <i class="icon-hand-up icon-white"></i>
+</div>
+
+<script>
+$(function() {
+  $('.scrollup').click(function() {
+    $("html, body").animate({
+      scrollTop:0
+    },1000);
+  })
+})
+
+$(window).scroll(function() {
+  if ($(this).scrollTop()>200) {
+    $('.scrollup').fadeIn();
+  }
+  else {
+    $('.scrollup').fadeOut();
+  }
+});
+</script>
+
+@if (Request.IsAuthenticated)
+{
+<div id="wrap">
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				</button>
+				<a class="brand hidden-desktop" href='@Url.Action("Index", "Home")' title="WebMediaPortal"><img src="@Url.ContentLink("Images/favicon.png")" height="36" alt="WebMediaPortal"></a>
+				@{Html.RenderAction("Menu", "Site");}
+				
+				<div class="nav-collapse collapse">
+					<ul class="nav pull-right">
+						<li class="dropdown @if (Request.RawUrl.Contains("/Settings")) { <text>active</text> }" >
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> @Html.Raw(Context.User.Identity.Name) <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href='@Url.Action("Index", "Settings")'><i class="icon-wrench"></i> @UIStrings.Settings</a></li>
+								<li><a href='@Url.Action("LogOff", "Account")'><i class="icon-off"></i> @UIStrings.LogOff</a></li>
+							</ul>
+						</li>
+					</ul>
+					@using (Html.BeginForm("Results", "Search", FormMethod.Get, new { @class = "navbar-search pull-left" })) { <input type="text" name="text" class="search-query span2" placeholder="@UIStrings.SearchFieldPlaceholder" /> }
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		@if(ViewBag.showTitle != false) { <div class="page-header"><h1>@(ViewBag.HeadTitle != null ? ViewBag.HeadTitle : (ViewBag.Title != null ? ViewBag.Title : UIStrings.Welcome)) <small>@ViewBag.SubTitle</small></h1></div> }
+		@RenderBody()
+	</div>
+	<div id="push"></div>
+	
+</div>
+
+
+<div id="footer">
+	<div class="container">
+		<p class="muted credit">WebMediaPortal | Bootstrap theme by Kay Schasfoort | Contributed by ajs | Team Mediaportal</p>
+	</div>
+</div>
+}else
+{
+@RenderBody()
+}
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+﻿@model ArtistViewModel
+@{ViewBag.Title = string.IsNullOrEmpty(Model.Artist.Title) ? UIStrings.AllAlbums : String.Format(UIStrings.AlbumsFromArtist, Model.Artist.Title);
+  ViewBag.showTitle = string.IsNullOrEmpty(Model.Artist.Title);
+}
+
+@{if (Model.Artist.FanartCount > 1)
+  {
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('.carousel').carousel({
+          interval: 10000
+        });
+      });
+    </script>
+  }
+}
+
+@{if (!string.IsNullOrEmpty(Model.Artist.Title))
+  {
+    <div id="fanartheader" class="carousel slide hidden-phone">
+      <div class="carousel-inner">
+        @if (Model.Artist.FanartCount <= 1)
+        {
+          <div class="item active">
+            <img src='@Url.ContentLink("Images/default/fanart.png")' data-original='@Url.Action("ArtistFanart", new { artist = Model.Artist.Id, width = 1170 })' width="100%" height="100%" />
+          </div>
+        }
+        else
+        {
+          <div class="active item">
+            <img src='@Url.Action("ArtistFanart", new { artist = Model.Artist.Id, width = 1170 })' width="100%" height="100%" />
+          </div>
+          for (int i = 1; i < Model.Artist.FanartCount; i++)
+          {
+            <div class="item">
+              <img src='@Url.Action("ArtistFanart", new { artist = Model.Artist.Id, width = 1170, num = i })' width="100%" height="100%" />
+            </div>
+          }
+        }
+      </div>
+      <div class="carousel-caption">
+        <h1>@Model.Artist</h1>
+      </div>
+    </div>
+  }
+}
+
+@{if (!string.IsNullOrEmpty(Model.Artist.Title))
+  {
+    <div class="row-fluid">
+      <div class="span8">
+
+        <ul class="breadcrumb">
+          <li><a href='@Url.Action("Index", "MusicLibrary", new { })'>@UIStrings.Music</a> <span class="divider">/</span></li>
+          <li class="active">@Model.Artist.Title</li>
+        </ul>
+
+        <ul class="list music covers clearfix">
+          @foreach (var album in Model.Albums)
+          {
+            <li>
+              <a href='@Url.Action("Album", new { album = album.Id, codec = album.Codec })' title="@album.Title (@album.Year)" class="albuminfo">
+                <img height="214" width="214" src='@Url.Action("AlbumImage", "MusicLibrary", new { album = album.Id, width = 214 })' alt="@album.Title" />
+                <h4>@album.Title</h4>
+                <p><strong>@album.Year</strong></p>
+                <p class="muted"><small>@album.Codec</small></p>
+              </a>
+            </li>
+          }
+        </ul>
+
+      </div>
+
+      <div class="span4">
+        <div class="span12 row center">
+          <img class="lazy img-polaroid img-rounded" width="250" src='@Url.ContentLink("Images/default/artist.png")' data-original='@Url.Action("ArtistImage", "MusicLibrary", new { artist = Model.Artist.Id, width = 250 })' alt="@Model.Artist.Title" />
+          <p class="center">
+            <strong>@Model.Artist.Title</strong><br />
+            <span class="muted"><small>@Model.Artist.Styles</small></span>
+          </p>
+        </div>
+
+        <div class="span12 row">
+          <p>@Model.Artist.Biography</p>
+        </div>
+      </div>
+    </div>
+  }
+  else
+  {
+    <script type="text/javascript">
+      $(function() {
+        facade(localStorage['facade_musicalbums'], 'musicalbums');
+      });
+    </script>
+
+    <div class="form-inline add-margin">
+      @if (Model.Albums.Count() > 0)
+      {
+        <div class="btn-group">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+            Genre
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href='@Url.Action("Albums", "MusicLibrary", new { })'>All genres</a></li>
+            @foreach (var genre in Model.Albums.SelectMany(x => x.Genres).Distinct().OrderBy(x => x).ToList())
+            {
+              <li><a href='@Url.Action("Albums", "MusicLibrary", new { filter = "Genres*=" + genre + "" })'>@genre</a></li>
+            }
+          </ul>
+        </div>
+      }
+
+      <div class="btn-group">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+          View
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="javascript:facade('simple', 'musicalbums');"><i class="icon-align-justify"></i> List</a></li>
+          <li><a href="javascript:facade('music coverlist', 'musicalbums');"><i class="icon-th-list"></i> Coverlist</a></li>
+          <li><a href="javascript:facade('music covers', 'musicalbums');"><i class="icon-th"></i> Covers</a></li>
+          <li><a href="javascript:facade('music covers large', 'musicalbums');"><i class="icon-th-large"></i> Large Covers</a></li>
+        </ul>
+      </div>
+
+      <input type="text" id="filter" placeholder="Filter" class="input-small" />
+
+    </div>
+
+    <ul class="list music covers" id="facade">
+      @{
+        char lastLetter = '~';
+        foreach (var album in Model.Albums)
+        {
+           <li data-title="@album.Title.ToLower()" @if (!lastLetter.Equals(album.Title[0]) && !Char.IsNumber(album.Title[0])) { <text> id="@(album.Title[0])" class="shortcut" </text> }>
+             <a href='@Url.Action("Album", new { album = album.Id, codec = album.Codec })' title="@album.AlbumArtist - @album.Title (@album.Year)" class="albuminfo">
+               <img height="214" width="214" src='@Url.Action("AlbumImage", "MusicLibrary", new { album = album.Id, width = 214 })' alt="@album.Title" />
+               <h4>@album.Title</h4>
+               <h5>@album.AlbumArtist</h5>
+               <p><strong>@album.Year</strong></p>
+               <p class="muted"><small>@album.Codec</small></p>
+             </a>
+           </li>
+           lastLetter = ((Char.IsNumber(album.Title[0])) ? '#' : album.Title[0]);
+        }
+      }
+      </ul>
+  }
+
+  <script type="text/javascript">
+    var letters = [];
+
+    $('.shortcut').each(function() {
+      letters.push($(this).attr('id'));
+    });
+
+    $(function () {
+      $('.albuminfo').tooltip();
+    });
+  </script>
+}

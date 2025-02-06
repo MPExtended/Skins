@@ -1,0 +1,17 @@
+﻿@model PlayerViewModel
+@using MPExtended.Services.Common.Interfaces
+
+@Html.Assets().AddViewScript("Stream/HLS/HLSPlayer.js")
+
+<div class="intrinsicRatio ratio16to9">
+	<div id="hlsplayer" style="width: 100%; height: 100%; background: #000;"
+		data-url='@Url.Action("StartHttpLiveStream", "Stream", new { type = Model.MediaType, itemId = Model.MediaId, transcoder = Model.TranscoderProfile.Name, continuationId = Model.ContinuationId })'>
+			<div id="loader">
+					<img src='@Url.ContentLink("Images/ajax-loader.gif")' />
+			</div>
+	</div>
+</div>
+
+<div id="error">
+	@UIStrings.FailedToStartStream
+</div>

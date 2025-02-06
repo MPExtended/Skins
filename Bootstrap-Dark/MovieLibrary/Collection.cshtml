@@ -1,0 +1,57 @@
+﻿@model CollectionViewModel
+@{ViewBag.Title = Model.Collection.Title;
+ViewBag.showTitle = false;}
+
+<div class="watched-container">
+<div id="fanartheader" class="carousel slide hidden-phone">
+  <div class="carousel-inner">
+      <div class="active item">
+        <img src='@Url.ContentLink("Images/default/fanart.png")' data-original='@Url.Action("CollectionFanart", "MovieLibrary", new { collection = Model.Collection.Id, width = 1170 })' width="100%" height="100%" />
+      </div>
+  </div>
+  <div class="carousel-caption">
+	<h1>@Model.Collection.Title</h1>
+  </div>
+</div>
+<div class="page-header visible-phone" ><h1>@(ViewBag.Title != null ? ViewBag.Title : UIStrings.Collection)</h1></div>
+
+<div class="row-fluid">
+	<div class="span8">
+		<ul class="breadcrumb">
+            <li><a href='@Url.Action("Collections", "MovieLibrary", new { })'>@UIStrings.Collections</a> <span class="divider">/</span></li>
+			<li class="active">@Model.Collection.Title</li>
+		</ul>
+
+		<ul class="list movie covers clearfix">
+		@foreach (var movie in Model.Movies)
+		{
+		<li>
+      <a href='@Url.Action("Details", "MovieLibrary", new { movie = movie.Id })'>
+        <div class="watched-container">
+          <img class="lazy" width="214" src='@Url.ContentLink("Images/default/movie-cover.png")' data-original='@Url.Action("Cover", "MovieLibrary", new { movie = movie.Id, width = 214 })' alt="@movie.Title" />
+          @if (movie.Watched)
+          {
+            <img class="watch" src='~/content/images/watched.png' alt="Watched" />
+          }
+        </div>
+        <h4>@movie.Title</h4>
+        <p>@movie.Runtime min.	@string.Join(", ", movie.Genres)</p>
+      </a>
+		</li>
+		}
+		</ul>
+		
+	</div>
+	
+
+	<div class="span4">
+		<div class="span12 row center">
+			<img class="img-polaroid img-rounded" src='@Url.Action("CollectionCover", "MovieLibrary", new { collection = Model.Collection.Id, width = 250 })' width="250" alt="@Model.Collection.Title" />
+		</div>
+	
+		<div class="span12 row">
+			<h3>Description</h3>
+			<p>@Model.Collection.Description</p>
+		</div>
+	</div>
+</div>

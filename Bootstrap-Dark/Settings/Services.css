@@ -1,0 +1,15 @@
+﻿div.search {
+	margin: 10px;
+	text-align: center;
+}
+div.search div#loader {
+	margin-top: 70px;
+	text-align: center;
+}
+div.search div.result {
+	float: left;
+	width: 225px;
+	text-align: center;
+	background: #f9f9f9;
+	padding: 10px;
+}

@@ -1,0 +1,69 @@
+﻿@model IEnumerable<MPExtended.Services.MediaAccessService.Interfaces.TVShow.WebTVShowDetailed>
+@{
+	var menuModel = new MenuModel(Request.RequestContext.RouteData);
+	String selectedGenre = "";
+
+	if(Request["filter"] != null)
+	{
+		String filter = Request["filter"];
+		selectedGenre = filter.Substring(8, filter.Length-8);
+		ViewBag.Title = UIStrings.TVShows + " - " +  selectedGenre;
+	}else
+	{
+		ViewBag.Title = UIStrings.TVShows;
+	}
+}
+
+<script type="text/javascript">
+	$(function() {
+		facade(localStorage['facade_tvshowslibary'], 'tvshowslibary');
+	});
+</script>
+
+<div class="form-inline add-margin">
+	<div class="btn-group">
+        <a class="btn" href='@Url.Action("Genres", "TVShowsLibrary", new { })'>@UIStrings.Genres</a>
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+		<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li><a href='@Url.Action("Index", "TVShowsLibrary", new { })'>All genres</a></li>
+			@foreach (var genre in menuModel.TVShowGenres)
+			{
+			<li><a href='@Url.Action("Index", "TVShowsLibrary", new { filter = "Genres*=" + genre + "" })'>@genre</a></li>
+			}
+		</ul>
+	</div>
+
+   	<div class="btn-group">
+        <a class="btn" href='@Url.Action("Actors", "TVShowsLibrary", new { })'>@UIStrings.Actors</a>
+   	</div>
+
+	<div class="btn-group">
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+		View
+		<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li><a href="javascript:facade('simple', 'tvshowslibary');"><i class="icon-align-justify"></i> List</a></li>
+			<li><a href="javascript:facade('banners covers', 'tvshowslibary');"><i class="icon-th"></i> Banners</a></li>
+			<li><a href="javascript:facade('banners covers large', 'tvshowslibary');"><i class="icon-th-large"></i> Large Banners</a></li>
+			<li><a href="javascript:facade('posters covers', 'tvshowslibary');"><i class="icon-th-large"></i> Posters</a></li>
+		</ul>
+	</div>
+
+	<input type="text" id="filter" placeholder="Filter" class="input-small" />
+</div>
+	
+<ul class="list posters covers" id="facade">
+@foreach (var show in Model)
+{
+	<li data-title="@show.Title.ToLower()">
+		<a href='@Url.Action("Seasons", "TVShowsLibrary", new { show = show.Id })'>
+			<img class="lazy banner" width="370" src='@Url.ContentLink("Images/default/tvshow-banner.png")' data-original='@Url.Action("SeriesBanner", new { show = @show.Id, width = 370 })' alt="@show.Title" />
+			<img class="lazy poster" width="370" src='@Url.ContentLink("Images/default/tvshow-poster.png")' data-original='@Url.Action("SeriesPoster", new { show = @show.Id, width = 214 })' alt="@show.Title" />
+			<h4>@show.Title</h4>
+		</a>
+	</li>
+}
+</ul>

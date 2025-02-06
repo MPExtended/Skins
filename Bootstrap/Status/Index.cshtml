@@ -1,0 +1,229 @@
+﻿@model StatusViewModel
+@{ViewBag.Title = UIStrings.TVServerStatus;}
+
+@Html.Assets().AddViewScript("Content/js/flot/jquery.flot.js")
+
+@if (Model.HasTAS)
+{
+<h2>@UIStrings.Cards</h2>
+<table class="table table-striped">
+<thead>
+	<tr>
+		<th>#</th>
+		<th class="hidden-tablet hidden-phone">@UIStrings.CardName</th>
+		<th>@UIStrings.CardState</th>
+		<th class="hidden-tablet hidden-phone">@UIStrings.CardGrabbingEPG</th>
+		<th>@UIStrings.Channel</th>
+		<th class="hidden-tablet hidden-phone">@UIStrings.CardScrambled</th>
+		<th class="hidden-phone">@UIStrings.Username</th>
+		<th>&nbsp;</th>
+	</tr>
+</thead>
+<tbody>
+@foreach (var card in Model.Cards)
+{
+	<tr>
+		<td>@card.CardId</td>
+		<td class="hidden-tablet hidden-phone">@card.Name</td>
+		<td>@card.State</td>
+		<td class="hidden-tablet hidden-phone">@(card.GrabbingEPG ? UIStrings.Yes : UIStrings.No)</td>
+		<td>@card.ChannelName</td>
+		@if (card.IsActive)
+		{
+		<td class="hidden-tablet hidden-phone">@(card.Scrambled ? UIStrings.Yes : UIStrings.No)</td>
+		<td class="hidden-phone hide-overflow" style="max-width: 100px;">@card.Username</td>
+		<td>
+			@(!card.VirtualCard.IsRecording ? Html.ActionLink(UIStrings.Stop, "Stop", new { user = card.Username }, new { @class = "btn btn-mini btn-danger" } ) : MvcHtmlString.Empty)
+			@Html.ActionLink(UIStrings.Details, "Details", new { user = card.Username }, new { @class = "btn btn-mini" } )
+		</td>
+		}
+		else
+		{
+		<td class="hidden-tablet hidden-phone">&nbsp;</td>
+		<td class="hidden-phone">&nbsp;</td>
+		<td>&nbsp;</td>
+		}
+		</tr>
+}
+</tbody>
+</table>
+}
+
+<br />
+<h2>@UIStrings.DiskInformation</h2>
+<table class="table table-striped">
+<thead>
+	<tr>
+		<th>@UIStrings.DiskInfoDisk</th>
+		<th class="hidden-phone">@UIStrings.DiskInfoUsed</th>
+		<th>@UIStrings.DiskInfoSize</th>
+		<th>@UIStrings.DiskInfoAvailable</th>
+	</tr>
+</thead>
+<tbody>
+	@foreach (var disk in Model.DiskInformation.OrderBy(x => x.Disk))
+	{
+	if(disk.Size != 0)
+	{
+		<tr>
+			<td>@disk.Disk</td>
+			<td class="hidden-phone">@Math.Round(disk.Used, 1) GB</td>
+			<td>@Math.Round(disk.Size, 1) GB</td>
+			<td @if((disk.Size > 500 && disk.PercentageUsed > 95) || (disk.Size <= 500 && disk.PercentageUsed > 90)) { <text>style="color: Red;"</text> }	>
+				@Math.Round(100 - @disk.PercentageUsed)<text>%</text>
+			</td>
+		</tr>
+	}
+}
+</tbody>
+</table>
+
+<br />
+<h2>@UIStrings.SystemStatus</h2>
+
+<div class="btn-group">
+	<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+		Refreshrate (<span id="currentRefreshrate"></span> s)
+		<span class="caret"></span>
+	</a>
+	<ul class="dropdown-menu">
+		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 1;" >1 s</a></li>
+		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 2;" >2 s</a></li>
+		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 3;" >3 s</a></li>
+		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 5;" >5 s</a></li>
+		<li><a href="Javascript:void(0);" onclick="javascript:cachedRefreshRate = 10;" >10 s</a></li>
+	</ul>
+</div>
+
+<div class="add-margin">
+	@UIStrings.CurrentCPUUsage <span id="cpuUsageText">0</span>%
+	<div class="progress progress-striped"><div class="bar" id="cpuUsage"></div></div>
+
+	@UIStrings.CurrentMemoryUsage <span id="memoryUsageText">0</span> MB of @Model.TotalMemoryMegaBytes MB
+	<div class="progress progress-info progress-striped"><div class="bar" id="memoryUsage"></div></div>
+</div>
+
+
+<div id="usageGraph" style="height: 180px;"></div>
+
+<!--<pre id="array"></pre>-->
+
+
+<script type="text/javascript">
+var startTimeStamp = (+new Date)/1000;
+var historySize = 240, //seconds
+		refreshRate = 2,
+		cachedRefreshRate = refreshRate; //seconds
+
+var options = {
+	lines: {
+		show: true
+	},
+	series: {
+		shadowSize: 0	// Drawing is faster without shadows
+	},
+	points: {	show: false	},
+	colors: [ "#AFD8F8", "#149BDF" ],
+	xaxes: [{ tickSize: 30, min: -historySize, max: 0 }],
+	yaxes: [
+		{ tickSize: 10, min: 0, max: 100 },
+		{ tickSize: @Model.TotalMemoryMegaBytes/10, min: 0, max: @Model.TotalMemoryMegaBytes, position: 'right' }
+	],
+	legend: { position: "nw" }
+};
+
+
+console.log(localStorage['status_dataCPU']);
+
+if(localStorage['statusdata']  == undefined) {
+	var dataCPU = [ 0 ],
+			dataMem = [ 0 ],
+			timeStamps = [ startTimeStamp ];
+}else{
+	var dataCPU = JSON.parse(localStorage.getItem('status_dataCPU')),
+			dataMem = JSON.parse(localStorage['status_dataMem']),
+			timeStamps = JSON.parse(localStorage['status_timeStamps']);
+	dataCPU.splice(0, 0, 0);
+	dataMem.splice(0, 0, 0);
+	timeStamps.splice(0, 0, startTimeStamp);
+}
+
+var plot = $.plot("#usageGraph", [ {data: dataMem, label: 'Memory', yaxis: 2}, {data: dataCPU, label: 'CPU'} ], options);
+
+$(function () {
+	var updateCounters = function () {
+	
+		$.ajax({ // cannot use $.getJSON() here because it doesn't support setting cache to false
+			url: '@Url.Action("GetPerformanceCounters", "Status")',
+			dataType: "json",
+			cache: false,
+			success: function (result) {
+				if (!('Error' in result)) {
+					$("#cpuUsage").css('width', result.CPU + '%');
+					$("#memoryUsage").css('width', (result.Memory / @Model.TotalMemoryMegaBytes)*100 + '%');
+					$("#cpuUsageText").html(Math.round(result.CPU));
+					$("#memoryUsageText").html(Math.round(result.Memory));
+					
+					timeStamp = (+new Date)/1000;
+
+					//push data to arrays
+					dataCPU.splice(0, 0, result.CPU);
+					dataMem.splice(0, 0, result.Memory);
+					timeStamps.splice(0, 0, timeStamp);
+					
+					dataCPU.splice(0, 0, 0);
+					dataMem.splice(0, 0, 0);
+					timeStamps.splice(0, 0, timeStamp);
+					
+					localStorage.setItem('status_dataCPU', JSON.stringify(dataCPU));
+					localStorage.setItem('status_dataMem', JSON.stringify(dataMem));
+					localStorage.setItem('status_timeStamps', JSON.stringify(timeStamps));
+					
+					dataCPU.splice(0, 1);
+					dataMem.splice(0, 1);
+					timeStamps.splice(0, 1);
+							
+					//clear temporary graph arrays
+					var dataCPUg = [ ];
+					var dataMemg = [ ];
+					
+					//make data usable for graph
+					for (var i = 0; i < dataCPU.length; ++i) {
+						var dt = Math.round(timeStamps[i] - timeStamp);
+						dataCPUg.push([dt, dataCPU[i]]);
+						dataMemg.push([dt, dataMem[i]]);
+						
+						//remove oldest points from data
+						if(-dt > historySize+10) {
+							dataCPU.splice(i, 1);
+							dataMem.splice(i, 1);
+							timeStamps.splice(i, 1);
+						}
+					}
+					
+					//$("#array").html(dataCPUg.join('\n'));
+
+					plot.setData([ {data: dataMemg, label: 'Memory', yaxis: 2}, {data: dataCPUg, label: 'CPU'} ]);
+					plot.draw();
+				}
+				
+				//change refreshrate for next time if requested
+				if(cachedRefreshRate != refreshRate) {
+					clearInterval(interval);
+					interval = setInterval(updateCounters, cachedRefreshRate*1000);
+					refreshRate = cachedRefreshRate;
+				}
+$("#currentRefreshrate").html(refreshRate);
+			}
+		});
+		
+							
+		//$("#totaltimegraph").html(totalTime);
+		//$("#totaltimereal").html((+new Date - timeStamp)/1000);
+	};
+	
+	var interval = setInterval(updateCounters, refreshRate*1000);
+	updateCounters();
+});
+
+</script>

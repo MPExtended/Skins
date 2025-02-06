@@ -1,0 +1,46 @@
+﻿@model ProgramDetailsViewModel
+@{ViewBag.Title = Model.Title;}
+
+<div class="row-fluid">
+	<div class="span8">
+    <ul class="breadcrumb">
+      <li><a href='@Url.Action("TVGuide", "Television", new { })'>@UIStrings.TVGuide</a> <span class="divider">/</span></li>
+      <li class="active">@Model.ChannelName: @Model.Title</li>
+    </ul>
+
+		<p>@if(Model.Description.Equals("")) { <text>No description.</text> }else { @Model.Description } </p>
+			
+		<dl class="dl-horizontal">
+			<dt>@UIStrings.Channel:</dt> <dd>@Model.ChannelName</dd>
+			<dt>Date:</dt> <dd>@String.Format("{0:dddd d MMMM}", @Model.StartTime)</dd>
+			<dt>Time:</dt> <dd>@String.Format("{0:t}", @Model.StartTime) - @String.Format("{0:t}", @Model.EndTime)</dd>
+		</dl>
+	</div>
+
+
+
+	<div class="span4">
+		<div class="span12 row center">
+			<img class="img-polaroid img-rounded" src='@Url.Action("ChannelLogo", new { channelId = @Model.ChannelId, width = 250, height = 250 })' alt="Channel Logo" style="box-shadow: none !important; background-color: #000 !important;"/>
+		</div>
+		
+		
+	<div class="btn-toolbar center">
+			<div class="btn-group" style="margin-top: 10px;">
+				@if (@Model.IsScheduled)
+				{
+					<a class="btn" href='@Url.Action("DeleteSchedule", "Schedule", new { programId = @Model.Id })' style="background: #EF321D;"><i class="icon-remove"></i> @UIStrings.CancelSchedule</a>
+				}
+				else
+				{
+					<a class="btn" href='@Url.Action("AddSchedule", "Schedule", new { programId = @Model.Id })'><i class="icon-plus"></i> @UIStrings.CreateSchedule</a>
+				}
+				@* Watch live link *@
+				@if (Model.CanWatchLive)
+				{
+					<a class="btn" href='@Url.Action("WatchLiveTV", new { channelId = Model.ChannelId })'><i class="icon-play"></i> @UIStrings.WatchLive</a>
+				}
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,18 @@
+﻿@model TVEpisodeViewModel
+@{ViewBag.Title = String.Format("{0} {1}x{2} - {3}", Model.Show.Title, Model.Season.SeasonNumber, Model.Episode.EpisodeNumber, Model.Episode.Title);}
+
+<ul class="breadcrumb">
+  <li><a href='@Url.Action("Index", "TVShowsLibrary", new { })'>@UIStrings.TVShows</a> <span class="divider">/</span></li>
+  <li><a href='@Url.Action("Seasons", "TVShowsLibrary", new { show= Model.Season.ShowId  })'>@Model.Show.Title</a> <span class="divider">/</span></li>
+  <li><a href='@Url.Action("Episodes", "TVShowsLibrary", new { season= Model.Episode.SeasonId  })'>@String.Format(UIStrings.Season, Model.Season.SeasonNumber)</a> <span class="divider">/</span></li>
+  <li><a href='@Url.Action("Play", new { episode = Model.Episode.Id })'>@String.Format(UIStrings.EpisodeDisplay, Model.Episode.EpisodeNumber, Model.Episode.Title)</a> <span class="divider">/</span></li>
+  <li class="active">@UIStrings.Play</li>
+</ul>
+
+@{
+	Html.RenderAction("Player", "Stream", new
+	{
+		type = MPExtended.Services.Common.Interfaces.WebMediaType.TVEpisode,
+		itemId = @Model.Episode.Id
+	});
+}

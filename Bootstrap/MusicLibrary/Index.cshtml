@@ -1,0 +1,99 @@
+﻿@model IEnumerable<MPExtended.Services.MediaAccessService.Interfaces.Music.WebMusicArtistDetailed>
+@{
+	var menuModel = new MenuModel(Request.RequestContext.RouteData);
+	String selectedFilter = "";
+
+	if(Request["filter"] != null)
+	{
+		String filter = Request["filter"];
+		int offset = filter.IndexOf("*=");
+		selectedFilter = filter.Substring(offset + 2, filter.Length - offset - 2);
+		ViewBag.Title = UIStrings.Music + " - " +  selectedFilter;
+	}else
+	{
+		ViewBag.Title = UIStrings.Music;
+	}
+}
+
+<script type="text/javascript">
+	$(function() {
+		facade(localStorage['facade_musiclibary'], 'musiclibary');
+	});
+</script>
+
+<div class="form-inline add-margin">
+	@if (menuModel.MusicGenres.Count() > 0)
+	{
+    	<div class="btn-group">
+    		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+    		Genre
+    		<span class="caret"></span>
+    		</a>
+    		<ul class="dropdown-menu">
+    			<li><a href='@Url.Action("Index", "MusicLibrary", new { })'>All genres</a></li>
+    			@foreach (var genre in menuModel.MusicGenres)
+    			{
+    			  <li><a href='@Url.Action("Index", "MusicLibrary", new { filter = "Genres*=" + genre + "" })'>@genre</a></li>
+    			}
+    		</ul>
+    	</div>
+	}
+	<div class="btn-group">
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+		View
+		<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li><a href="javascript:facade('simple', 'musiclibary');"><i class="icon-align-justify"></i> List</a></li>
+			<li><a href="javascript:facade('music coverlist', 'musiclibary');"><i class="icon-th-list"></i> Coverlist</a></li>
+			<li><a href="javascript:facade('music covers', 'musiclibary');"><i class="icon-th"></i> Covers</a></li>
+			<li><a href="javascript:facade('music covers large', 'musiclibary');"><i class="icon-th-large"></i> Large Covers</a></li>
+		</ul>
+	</div>
+
+	<input type="text" id="filter" placeholder="Filter" class="input-small" />
+</div>
+
+@if(Model.Count() == 0)
+{
+	<p>You don't have any music.</p>
+}else
+{
+	<ul class="list simple" id="facade">
+	@{
+	  char lastLetter = '~';
+	  foreach (var artist in Model)
+	  {
+        <li data-title="@artist.Title.ToLower()" @if(!lastLetter.Equals(artist.Title[0]) && !Char.IsNumber(artist.Title[0])){ <text>id="@(artist.Title[0])" class="shortcut"</text> }>
+        @if (artist.HasAlbums)
+        {
+            <a href='@Url.Action("Albums", new { artist = artist.Id })' title="@artist.Title" class="artistinfo">
+              <img class="lazy" width="214" height="214" src='@Url.ContentLink("Images/default/artist.png")' data-original='@Url.Action("ArtistImage", "MusicLibrary", new { artist = artist.Id, width = 214 })' alt="@artist.Title" />
+              <h4>@artist.Title</h4>
+            </a>
+		}
+		else
+		{
+            <a href='@Url.Action("ArtistTracks", new { artist = artist.Id })' title="@artist.Title" class="artistinfo">
+              <img class="lazy" width="214" height="214" src='@Url.ContentLink("Images/default/artist.png")' data-original='@Url.Action("ArtistImage", "MusicLibrary", new { artist = artist.Id, width = 214 })' alt="@artist.Title" />
+              <h4>@artist.Title</h4>
+            </a>
+		}
+        </li>
+        lastLetter = ((Char.IsNumber(artist.Title[0])) ? '#' : artist.Title[0]);
+	  }
+	}
+	</ul>
+}
+
+<script type="text/javascript">
+var letters = [];
+
+$('.shortcut').each(function() {
+	letters.push($(this).attr('id'));
+});
+
+$(function() {
+  $('.artistinfo').tooltip();
+});
+</script>

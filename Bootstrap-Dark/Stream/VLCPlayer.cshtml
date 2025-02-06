@@ -1,0 +1,25 @@
+﻿@model PlayerViewModel
+@using MPExtended.Services.Common.Interfaces
+
+@Html.Assets().AddViewStylesheet("Stream/VideoJS/video-js.min.css")
+@Html.Assets().AddViewScript("Stream/VideoJS/video.min.js")
+
+<video id="webmp_video" class="video-js vjs-fluid vjs-big-play-centered" controls preload="auto"
+  @if (Model.MediaType == WebMediaType.Movie)
+  {
+    @: poster="@Url.Action("Fanart", "MovieLibrary", new { movie = @Model.MediaId, width=1170 })"
+  }
+  else if (Model.MediaType == WebMediaType.TVEpisode)
+  {
+    @: poster="@Url.Action("EpisodeImage", "TVShowsLibrary", new { episode = @Model.MediaId, width=1170 })"
+  }
+  else if (Model.MediaType == WebMediaType.Recording)
+  {
+    @: poster="@Url.Action("PreviewImage", "Recording", new { id = Model.MediaId, width=1170 })"
+  }
+  data-setup='{"aspectRatio":"16:9", "playbackRates": [1, 1.5, 2]}'>
+  <source src="@Html.Raw(@Model.URL)" type="video/webm">
+  <source src="@Html.Raw(@Model.URL)" type="video/mp4">
+  <source src="@Html.Raw(@Model.URL)" type="video/MP2T">
+  <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+</video>

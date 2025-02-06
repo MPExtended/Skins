@@ -1,0 +1,159 @@
+@model MPExtended.Applications.WebMediaPortal.Models.PictureFolderViewModel
+@{
+  ViewBag.Title = UIStrings.Pictures;
+  ViewBag.showTitle = Model.Folder.Categories.Count() <= 1;
+}
+
+<script type="text/javascript">
+	$(function() {
+		facade(localStorage['facade_picturelibary'], 'picturelibary');
+	});
+</script>
+
+<div class="form-inline add-margin">
+  @if (Model.Folder.Categories.Count() > 1)
+  {
+    <ul class="breadcrumb">
+      @{
+        int i = 0;
+        foreach (var item in Model.Folder.Categories)
+        {
+          if (i++ == Model.Folder.Categories.Count() - 1)
+          {
+            <li class="active">@item.Title</li>
+          }
+          else
+          {
+            <li><a href='@Url.Action("Index", "PictureLibrary", new { id = item.Id })'>@item.Title</a><span class="divider">/</span></li>
+          }
+        }
+      }
+    </ul>
+  }
+
+  @if (Model.Folders.Count() > 0)
+  {
+    <div class="btn-group">
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+        View
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a href="javascript:facade('simple', 'picturelibary');"><i class="icon-align-justify"></i> List</a></li>
+        <li><a href="javascript:facade('picture coverlist', 'picturelibary');"><i class="icon-th-list"></i> Coverlist</a></li>
+        <li><a href="javascript:facade('picture covers', 'picturelibary');"><i class="icon-th"></i> Covers</a></li>
+        <li><a href="javascript:facade('picture covers large', 'picturelibary');"><i class="icon-th-large"></i> Large Covers</a></li>
+      </ul>
+    </div>
+  }
+
+  <input type="text" id="filter" placeholder="Filter" class="input-small" />
+</div>
+
+<ul class="list picture covers" id="facade">
+  @{
+    char lastLetter = '~';
+
+    foreach (var item in Model.Folders)
+    {
+      <li class="info" data-title="@item.Title.ToLower()" @if (!lastLetter.Equals(item.Title[0]) && !Char.IsNumber(item.Title[0])) { <text> id="@(item.Title[0])" class="shortcut" </text> }>
+        <a href='@Url.Action("Index", "PictureLibrary", new { id = item.Id })'>
+          <img class="lazy" width="214" src='@Url.ContentLink("Images/default/picture-folder.png")' data-original='@Url.Action("FolderCover", "PictureLibrary", new { folder = item.Id, width = 214 })' alt="@item.Title" />
+          <h4>@item.Title</h4>
+          <p>@item.Description</p>
+        </a>
+      </li>
+      lastLetter = ((Char.IsNumber(item.Title[0])) ? '#' : item.Title[0]);
+    }
+  }
+</ul>
+
+@{if (Model.Pictures.Count() > 0)
+  {
+  <ul class="list picture covers" id="facadepic">
+  @{
+    lastLetter = '~';
+
+    foreach (var pic in Model.Pictures)
+    {
+      if (pic.Title.Equals("folder.jpg", StringComparison.InvariantCultureIgnoreCase))
+      {
+        continue;
+      }
+      <li class="info" data-title="@pic.Title.ToLower()" @if (!lastLetter.Equals(pic.Title[0]) && !Char.IsNumber(pic.Title[0])) { <text> id="@(pic.Title[0])" class="shortcut" </text> }>
+        <a id="@Uri.EscapeDataString(pic.Id)" href='@Url.Action("Image", new { picture = pic.Id, width = 2000 })' data-fancybox="gallery" data-thumb='@Url.Action("Image", "PictureLibrary", new { picture = pic.Id, width = 214 })' data-caption="<b>@pic.Title</b><br /><a href='@Url.Action("Details", new { picture = pic.Id })'>@pic.DateTaken</a>">
+          <img class="lazy" width="214" src='@Url.ContentLink("Images/default/picture-cover.png")' data-original='@Url.Action("Image", "PictureLibrary", new { picture = pic.Id, width = 214 })' alt="@pic.Title" />
+          <h4>@pic.Title</h4>
+          <p>@pic.DateTaken</p>
+        </a>
+      </li>
+    }
+  }
+  </ul>
+  }
+}
+
+@{if (Model.Videos.Count() > 0)
+  {
+  <ul class="list picture covers" id="facadevid">
+  @{
+    lastLetter = '~';
+
+    foreach (var vid in Model.Videos)
+    {
+      <li class="info" data-title="@vid.Title.ToLower()" @if (!lastLetter.Equals(vid.Title[0]) && !Char.IsNumber(vid.Title[0]))
+      { <text> id="@(vid.Title[0])" class="shortcut" </text> }>
+        <a id="@Uri.EscapeDataString(vid.Id)" href='@Url.Action("Video", new { video = vid.Id })'>
+          <img class="lazy" width="214" src='@Url.ContentLink("Images/default/mobilevideo-cover.png")' data-original='@Url.Action("MobileVideo", "PictureLibrary", new { video = vid.Id, width = 214 })' alt="@vid.Title" />
+          <h4>@vid.Title</h4>
+          <p>@vid.DateTaken</p>
+        </a>
+      </li>
+    }
+  }
+  </ul>
+  }
+}
+
+<script type="text/javascript">
+  var letters = [];
+
+  $('.shortcut').each(function () {
+    letters.push($(this).attr('id'));
+  });
+</script>
+
+<script type="text/javascript">
+  $('[data-fancybox="gallery"]').fancybox({
+    buttons: [
+      "zoom",
+      "slideShow",
+      "fullScreen",
+      "info",
+      "thumbs",
+      "close"
+    ],
+    transitionEffect: "zoom-in-out",
+    slideShow: {
+      autoStart: false,
+      speed: 5000
+    },
+    thumbs: {
+      axis: 'x'
+    },
+    btnTpl: {
+      info:
+        '<a info data-fancybox-info class="fancybox-button fancybox-button--info" title="Info" href="javascript:;">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="2 2 24 24"><path d="M6.523,7.683c0.96,0,1.738-0.778,1.738-1.738c0-0.96-0.778-1.738-1.738-1.738c-0.96,0-1.738,0.778-1.738,1.738 C4.785,6.904,5.563,7.683,6.523,7.683z M5.944,5.365h1.159v1.159H5.944V5.365z M18.113,0.729H1.888 c-0.64,0-1.159,0.519-1.159,1.159v16.224c0,0.64,0.519,1.159,1.159,1.159h16.225c0.639,0,1.158-0.52,1.158-1.159V1.889 C19.271,1.249,18.752,0.729,18.113,0.729z M18.113,17.532c0,0.321-0.262,0.58-0.58,0.58H2.467c-0.32,0-0.579-0.259-0.579-0.58 V2.468c0-0.32,0.259-0.579,0.579-0.579h15.066c0.318,0,0.58,0.259,0.58,0.579V17.532z M15.91,7.85l-4.842,5.385l-3.502-2.488 c-0.127-0.127-0.296-0.18-0.463-0.17c-0.167-0.009-0.336,0.043-0.463,0.17l-3.425,4.584c-0.237,0.236-0.237,0.619,0,0.856 c0.236,0.236,0.62,0.236,0.856,0l3.152-4.22l3.491,2.481c0.123,0.123,0.284,0.179,0.446,0.174c0.16,0.005,0.32-0.051,0.443-0.174 l5.162-5.743c0.238-0.236,0.238-0.619,0-0.856C16.529,7.614,16.146,7.614,15.91,7.85z"/></svg>' +
+        "</a>"
+    }
+  });
+
+  $('body').on('click', '[data-fancybox-info]', function() {
+    let picId = $.fancybox.getInstance().current.opts.$orig.attr("id");
+    let loc = window.location;
+    let pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/') + 1);
+    let url = loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search + loc.hash).length - pathName.length)) + '../Details?picture=' + picId;
+    window.location.href = url;
+  });
+</script>

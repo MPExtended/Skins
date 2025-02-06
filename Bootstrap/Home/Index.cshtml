@@ -1,0 +1,20 @@
+﻿@model HomeViewModel
+@{ViewBag.Title = UIStrings.Home;
+ViewBag.showTitle = false;}
+
+@if (ViewBag.Availability.Movies) {
+	<div class="home">@Html.Partial("NewUnWatchedMovies", Model.GetLastAddedMovies(5, true))</div>
+}
+@if (ViewBag.Availability.TVShows) {
+	<div class="home">@Html.Partial("AiredUnwatchedEpisodes", Model.GetLastAiredTVEpisodes(5, true))</div>
+}
+@if (ViewBag.Availability.Music) {
+	<div class="home">@Html.Partial("NewAlbums", Model.GetLastAddedAlbums(5))</div>
+	@* Disable them for now because they make the homepage overly crowded
+	<div class="home">@Html.Partial("NewMusicTracks", Model.GetLastAddedMusicTracks(5))</div>
+	*@
+}
+@if (ViewBag.Availability.TAS) {
+	<div class="home">@Html.Partial("NewRecordings", Model.GetLastRecordings(5))</div>
+	<div class="home">@Html.Partial("CurrentSchedules", Model.GetTodaysSchedules())</div>
+}
