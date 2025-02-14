@@ -1,3 +1,8 @@
+# Bootstrap skins 0.7.270
+
+* Television/TVGuide.cshtml - Added Bootstrap DatePicker V1.9.0 and required js/css files
+* This version should determine the correct 'browser' Locale (those suported by MPExtender plus "en-GB") and set the date format/month & day names accordingly.
+
 # Bootstrap skins 0.7.260
 
 * Bootstrap v3.3.7
