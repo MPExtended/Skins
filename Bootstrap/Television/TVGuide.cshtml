@@ -1,17 +1,36 @@
 ﻿@model TVGuideViewModel
 @{ViewBag.Title = UIStrings.TVGuide;}
 
-@Html.Assets().AddContentStylesheet("css/datetimepicker.css")
-@Html.Assets().AddViewScript("Content/js/bootstrap-datetimepicker.min.js")
+<!-- https://bootstrap-datepicker.readthedocs.io/en/v1.9.0/ -->
+@Html.Assets().AddContentStylesheet("css/bootstrap-datepicker.min.css")
+@Html.Assets().AddViewScript("Content/js/bootstrap-datepicker.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.de.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.en-GB.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.es.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.fi.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.fr.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.he.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.id.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.it.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.lt.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.nl.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.no.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.sk.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.sl.min.js")
+@Html.Assets().AddViewScript("Content/js/locales/bootstrap-datepicker.sv.min.js")
 @Html.Assets().AddViewStylesheet("Television/TVGuide.css")
 
+@{string Locale = System.Threading.Thread.CurrentThread.CurrentCulture.Name;}
+
 <script type="text/javascript">
+
 $(function() {
-	$('.dateTimeInput').datetimepicker({
-		format: 'd-m-yyyy hh:ii',
-		autoclose: true,
-		todayBtn: true,
-		minuteStep: 30
+	$('.dateInput').datepicker({
+  	language: '@Locale',
+	  startDate: new Date(),
+	  endDate: new Date(new Date().setDate(new Date().getDate() + 7)),
+    todayHighlight: true,
+    todayBtn: 'linked'
 	}).change(
 	function () {
 		this.form.submit();
@@ -20,8 +39,7 @@ $(function() {
 	$("#group").change(function () {
 		this.form.submit();
 	});
-	
-	
+
 	if(localStorage['TVGuideView'] == 'lists') {
 		$("#TVGuide").addClass('lists');
 	}else{
@@ -34,7 +52,6 @@ $(function() {
 	// Bind event listener
 	$(window).resize(checkWidth);
 });
-
 
 function changeView() {
 	$("#TVGuide").toggleClass(function() {
@@ -67,15 +84,14 @@ function checkWidth() {
 		}
 	}
 }
-
 </script>
 
 <div id="TVGuideNavigation">
 	@using (Html.BeginForm("TVGuide", "Television", FormMethod.Get, new { @class="form-inline" } ))
 	{
 		@Html.DropDownList("group", Model.Groups)
-		/*@Html.EditorFor(model => model.GuideStart, "Time", "time", new { openOnFocus = true })*/
-		/*@Html.Hidden("time", Model.GuideStart.ToString("s"))*/
+ 		@Html.EditorFor(model => model.GuideStart, "Date", "date", new { openOnFocus = true })
+ 		/*@Html.Hidden("time", Model.GuideStart.ToString("s"))*/
 		<input id="changeViewBtn" type="button" class="btn" onclick="changeView();" value="Toggle view" />
 	}
 </div>
